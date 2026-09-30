@@ -1,0 +1,72 @@
+/* @theme teaching-notes */
+/* Document-style theme for full teaching-notes PDFs: A4 portrait, LTR,
+   English, Vazirmatn (it covers Latin beautifully and keeps visual kinship
+   with the course decks). Dense readable text. Companion palette to
+   sc-light / mlcourse-blue (blue family). */
+@import "default";
+
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("Vazirmatn.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+section {
+  width: 794px;          /* A4 @ 96dpi */
+  height: 1123px;
+  font-family: "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
+  font-size: 17px;
+  line-height: 1.75;
+  color: #3c4043;
+  background: #ffffff;
+  direction: ltr;
+  text-align: left;
+  padding: 64px 68px 72px;
+}
+
+section::after {
+  content: attr(data-marpit-pagination) " / " attr(data-marpit-pagination-total);
+  position: absolute;
+  bottom: 24px;
+  left: 34px;
+  font-size: 12px;
+  color: #9099a1;
+}
+
+h1 { font-size: 1.5em; color: #2b6cb0; margin: 0 0 .5em; }
+h2 {
+  font-size: 1.2em; color: #3c4043; border-bottom: 3px solid #6fa8dc;
+  padding-bottom: 6px; margin: 0 0 .6em;
+}
+h3 { font-size: 1.05em; color: #2b6cb0; margin: .8em 0 .3em; }
+h4 { font-size: .95em; color: #5f6b73; margin: .6em 0 .2em; }
+
+strong { color: #2b6cb0; }
+em { color: #5f6b73; }
+
+ul, ol { padding-left: 1.2em; }
+li { margin: .2em 0; }
+ul li::marker { color: #6fa8dc; }
+
+code {
+  font-family: "Consolas", monospace; font-size: .85em; color: #2d6a4f;
+  background: #e6f2ec; border-radius: 4px; padding: 1px 5px;
+}
+pre {
+  background: #f4f8fc; border: 1px solid #bfd7ee; border-radius: 8px;
+  padding: 14px 18px; font-size: .8em;
+}
+pre code { background: none; border: none; }
+
+blockquote {
+  border-left: 4px solid #6fa8dc; background: #f4f8fc;
+  border-radius: 8px; padding: 10px 16px; margin: .5em 0;
+}
+
+table { border-collapse: collapse; width: 100%; font-size: .9em; }
+th { background: #e2edf7; color: #3c4043; padding: 8px 12px; text-align: left; border: 1px solid #bfd7ee; }
+td { padding: 6px 12px; border: 1px solid #dce8f2; text-align: left; }
+
+section.lead { text-align: center; }
+section.lead h1 { font-size: 2em; }

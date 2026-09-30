@@ -1,0 +1,300 @@
+/* @theme mlcourse-blue-fa */
+/*
+  ═══════════════════════════════════════════════════════════════════
+  ML COURSE THEME — "Editorial Blue" (RTL, flat editorial style)
+  Extracted from the "Data Analysis" course sample.pptx (Google Slides
+  export): flat solid canvas, small course-name label on every slide,
+  big dark semi-bold titles, modest body size, side-by-side image/text,
+  NO gradients, glows, grids, or card frames.
+
+  Palette: the sample's yellow family remapped to light blue:
+    bg     #FFF2DC  ->  #EDF4FB   (light bluish canvas)
+    accent #FDD198  ->  #A9CCE8   (soft blue highlight)
+    accent #FFA767  ->  #6FA8DC   (medium blue)
+    accent #F0C894  ->  #BFD7EE   (pale blue)
+  Ink stays dark gray #3C4043. Font: Vazirmatn (per course decision).
+
+  Keeps the mandatory overflow guard + image budgets (non-negotiable
+  from the base skill — learned in production).
+
+  Slide classes: lead / hook / wow / focus / definition / quiz /
+                 handout / codespot  (flat variants)
+  ═══════════════════════════════════════════════════════════════════
+*/
+
+@import "default";
+
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("Vazirmatn.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* --- DESIGN TOKENS --- */
+:root {
+  --font-main: "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
+  --font-mono: "Cascadia Code", "Consolas", "Courier New", monospace;
+
+  --bg-canvas:    #edf4fb;   /* light bluish flat canvas (was cream) */
+  --bg-card:      #ffffff;
+  --bg-card-tint: #e2edf7;
+
+  --ink:          #3c4043;   /* sample's dark gray ink */
+  --ink-mid:      #5f6b73;
+  --ink-dim:      #9099a1;
+
+  --accent:       #6fa8dc;   /* medium blue (was orange) */
+  --accent-soft:  #a9cce8;   /* soft blue highlight (was amber) */
+  --accent-pale:  #bfd7ee;   /* pale blue (was tan) */
+  --violet:       #3d7ab5;   /* links/emphasis stay in the blue family */
+  --pink:         #5b8fc6;
+  --amber:        #7fa8c9;
+  --green:        #4a8f6c;
+}
+
+/* ═════════════════ BASE SLIDE ═════════════════ */
+
+section {
+  width: 1280px;
+  height: 720px;
+  font-family: var(--font-main);
+  font-size: 26px;
+  color: var(--ink);
+  background-color: var(--bg-canvas);   /* flat — no gradients, no glows */
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: isolate;
+  padding: 52px 76px 64px;
+  line-height: 1.65;
+
+  /* OVERFLOW GUARD (mandatory): flex column; images shrink to the space
+     left after text — content can never spill past the bottom edge */
+  display: flex;
+  flex-direction: column;
+}
+section > * { flex: 0 0 auto; }
+section img { flex: 0 1 auto; min-height: 0; }
+
+/* small course-name label, top of every slide (sample's header placeholder) */
+section::before {
+  content: "دورهٔ یادگیری ماشین";
+  position: absolute;
+  top: 18px;
+  right: 76px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-dim);
+  letter-spacing: .5px;
+}
+
+/* PAGINATION — bottom-left, LTR digits (sample's corner page marker) */
+section::after {
+  content: attr(data-marpit-pagination);
+  position: absolute;
+  bottom: 16px;
+  left: 34px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-dim);
+  direction: ltr;
+}
+
+strong { color: var(--violet); font-weight: 700; }
+em { color: var(--ink-mid); }
+
+a { color: var(--violet); text-decoration: none; border-bottom: 1px dotted rgba(61,122,181,.5); }
+
+/* ═════════════════ HEADINGS — big, dark, semi-bold (sample style) ═════════════════ */
+
+h1, h2, h3, h4 {
+  font-family: var(--font-main);
+  text-align: right;
+  line-height: 1.3;
+  margin: 0 0 .4em;
+  font-weight: 700;
+  color: var(--ink);            /* dark flat titles — no gradient text */
+}
+
+h1 { font-size: 1.7em; }
+
+h2 { font-size: 1.3em; color: var(--ink); }
+h2::after {
+  content: "";
+  display: block;
+  width: 84px; height: 4px; margin-top: 7px;
+  border-radius: 2px;
+  background: var(--accent);    /* flat blue underline bar */
+}
+
+h3 { font-size: 1.12em; color: var(--ink-mid); }
+h4 { font-size: 1.0em;  color: var(--ink-mid); }
+
+/* ═════════════════ LISTS ═════════════════ */
+
+ul, ol { direction: rtl; text-align: right; padding-right: .4em; }
+ul li::marker { color: var(--accent); }
+ol li::marker { color: var(--violet); font-weight: 700; }
+li { margin: .28em 0; }
+
+/* ═════════════════ CODE — flat light box, stays LTR ═════════════════ */
+
+section pre, section code {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: isolate;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: .82em;
+  color: #2d6a4f;
+  background: #e6f2ec;
+  border: 1px solid rgba(74,143,108,.3);
+  border-radius: 5px;
+  padding: 1px 6px;
+}
+
+pre {
+  background: var(--bg-card);
+  border: 1.5px solid var(--accent-pale);
+  border-radius: 10px;
+  padding: 24px 28px;
+  position: relative;
+  font-size: .78em;
+  line-height: 1.55;
+}
+
+pre::before {
+  content: "● ● ●";
+  position: absolute;
+  top: 9px; left: 14px;
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--accent);
+  direction: ltr;
+}
+pre::after {
+  content: "~/ml-course";
+  position: absolute;
+  top: 9px; right: 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  direction: ltr;
+}
+
+pre code { background: none; border: none; padding: 0; color: #2c3e50; }
+
+/* ═════════════════ TABLES — flat, thin rules (sample style) ═════════════════ */
+
+table {
+  direction: rtl;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: .6em auto;
+  font-size: .9em;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1.5px solid var(--accent-pale);
+  background: var(--bg-card);
+}
+th {
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-weight: 700;
+  padding: 11px 20px;
+  text-align: right;
+}
+td {
+  color: var(--ink);
+  padding: 9px 20px;
+  text-align: right;
+  border-top: 1px solid var(--bg-card-tint);
+  background: var(--bg-card);
+}
+tr:nth-child(even) td { background: var(--bg-card-tint); }
+
+/* ═════════════════ BLOCKQUOTE — flat callout ═════════════════ */
+
+blockquote {
+  background: var(--bg-card);
+  border: 1.5px solid var(--accent-pale);
+  border-right: 5px solid var(--accent);
+  border-radius: 10px;
+  padding: 16px 24px;
+  margin: .6em 0;
+  color: var(--ink);
+}
+
+/* ═════════════════ IMAGES — budgeted, can never overflow ═════════════════ */
+
+img {
+  border-radius: 10px;
+  border: 1.5px solid var(--accent-pale);
+  background: #ffffff;
+  max-height: 360px;
+  max-width: 88%;
+  object-fit: contain;
+}
+
+section.hook img,
+section.wow img,
+section.quiz img { max-height: 300px; }
+section.definition img,
+section.handout img { max-height: 300px; }
+section.lead img { max-height: 300px; }
+
+/* ═════════════════════════════════════════════════
+   SLIDE TYPES — flat variants (no glows, tinted canvases only)
+   ═════════════════════════════════════════════════ */
+
+/* --- LEAD: title & closing --- */
+section.lead {
+  background-color: var(--accent-soft);   /* the sample's colored section bg */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+section.lead::before { color: var(--ink-mid); }
+section.lead h1 { font-size: 2.3em; text-align: center; }
+section.lead h2 { font-size: 1.35em; text-align: center; }
+section.lead h2::after { margin-right: auto; margin-left: auto; }
+section.lead p { text-align: center; font-size: 1.05em; color: var(--ink-mid); }
+
+/* --- HOOK: demo slides (pale blue canvas) --- */
+section.hook { background-color: #e4eef9; }
+section.hook h1 { color: #2b6cb0; font-size: 1.5em; }
+
+/* --- WOW: wow-moments (pale blue, blue title) --- */
+section.wow { background-color: #dcebf8; }
+section.wow h1 { color: #2b6cb0; font-size: 1.5em; }
+
+/* --- FOCUS: serious/quiet beats (slightly deeper blue-gray) --- */
+section.dark, section.focus { background-color: #e3e9f0; }
+section.dark h1, section.focus h1 { color: #34495e; }
+section.dark strong, section.focus strong { color: #2b6cb0; }
+
+/* --- DEFINITION: flat green stripe card --- */
+section.definition { background-color: #e9f2ec; }
+section.definition h2 { color: var(--green); }
+section.definition h2::after { background: var(--green); }
+section.definition strong { color: var(--green); }
+
+/* --- QUIZ: dashed frame on flat canvas --- */
+section.quiz { background-color: #eaf0f6; }
+section.quiz h2 { color: #4a7fa8; }
+section.quiz h2::after { background: #4a7fa8; }
+section.quiz strong { color: #4a7fa8; }
+
+/* --- HANDOUT: at-home problems (blue stripe) --- */
+section.handout { background-color: #e8eef7; }
+section.handout h2 { color: #3d7ab5; }
+section.handout h2::after { background: #3d7ab5; }
+
+/* --- CODE SPOTLIGHT --- */
+section.codespot { justify-content: center; }
+section.codespot pre {
+  font-size: .95em;
+  border-color: var(--accent);
+}
