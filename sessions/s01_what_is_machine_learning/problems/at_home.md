@@ -1,7 +1,9 @@
 # Session 1 — At-Home Problems 
 
-**Due: before the problem-solving session.** Solve directly in `s01_notebook.ipynb`, PART B.
+**Due: before the problem-solving session. ~20–30 minutes total.** Solve directly in `s01_notebook.ipynb`, PART B.
 Grade yourself: `python judge/run.py s01_notebook.ipynb`
+
+**Your Ship tonight:** commit the notebook to your course GitHub repo — `git add .` → `git commit -m "S1: my first model"` → `git push` — then show your family: "I trained an AI today."
 
 **What you should learn:** building a dataset, training a model, and predicting with it — on your own.
 

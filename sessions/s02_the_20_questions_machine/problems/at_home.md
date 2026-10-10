@@ -1,7 +1,7 @@
 # Session 2 — At-Home Problems
 
-**Deadline:** before the next problem-solving session.
-**What to submit:** your `s02_notebook.ipynb` with cells B1–B3 filled.
+**Deadline:** before the next problem-solving session. **Time budget:** ~20–30 minutes.
+**What to submit:** your `s02_notebook.ipynb` with cells B1–B3 filled — AND your Ship: a photo of your hand-drawn paper tree, committed as `s02_tree.jpg`.
 **Judge:** `python judge/run.py s02_notebook.ipynb` — friendly feedback, partial credit, no tricks.
 
 ---

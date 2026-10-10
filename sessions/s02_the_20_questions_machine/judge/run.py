@@ -3,7 +3,7 @@
 
 Usage:  python judge/run.py <student_notebook.ipynb>
 
-Executes the notebook, then grades variables B1–B4. Prints a friendly report.
+Executes the notebook, then grades variables B1–B3. Prints a friendly report.
 Exits 0 if all points earned, 1 otherwise. Never crashes on empty/broken
 submissions — reports what it can.
 """
@@ -16,14 +16,19 @@ import test_solutions  # noqa: E402
 
 def load_namespace(nb_path):
     """Execute all code cells of the notebook and return the final namespace."""
-    nb = json.load(open(nb_path))
+    with open(nb_path, encoding="utf-8") as f:
+        nb = json.load(f)
+    cells = nb.get("cells", [])
+    if not isinstance(cells, list):
+        raise ValueError("no cells list found")
     ns = {}
-    for i, cell in enumerate(nb["cells"]):
-        if cell["cell_type"] != "code":
+    for i, cell in enumerate(cells):
+        if not isinstance(cell, dict) or cell.get("cell_type") != "code":
             continue
-        src = "".join(cell["source"])
-        # strip notebook magics — safe for pure-python grading
-        src = "\n".join(l for l in src.splitlines() if not l.strip().startswith("%"))
+        src = "".join(cell.get("source", ""))
+        # strip notebook magics and shell lines — safe for pure-python grading
+        src = "\n".join(l for l in src.splitlines()
+                        if not l.strip().startswith(("%", "!")))
         try:
             with contextlib.redirect_stdout(io.StringIO()):
                 exec(compile(src, f"<cell {i}>", "exec"), ns)
@@ -41,7 +46,17 @@ def main():
         print(f"X Cannot find notebook: {nb_path}")
         sys.exit(1)
 
-    ns = load_namespace(nb_path)
+    try:
+        ns = load_namespace(nb_path)
+    except Exception:
+        print("=" * 52)
+        print("  Session 2 Judge — At-Home Problems")
+        print("=" * 52)
+        print("X This file is not a readable notebook (.ipynb).")
+        print("  Re-download your notebook (File > Download) and try again,")
+        print("  or ask your teacher for help.")
+        sys.exit(1)
+
     results, total = test_solutions.grade(ns)
 
     print("=" * 52)

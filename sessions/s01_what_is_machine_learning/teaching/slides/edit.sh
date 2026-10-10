@@ -3,6 +3,7 @@
 #
 #   ./edit.sh            Persian deck (slides.md)
 #   ./edit.sh en         English deck (slides_en.md)
+#   PORT=8081 ./edit.sh  choose the port (default 8080) — run several at once
 #
 # HOW IT WORKS:
 #   1. This starts a live server and opens the deck in your browser.
@@ -25,6 +26,7 @@ SLIDES_DIR="$(cd "$(dirname "$0")" && pwd)"
 COURSE_ROOT="$(cd "$SLIDES_DIR/../../../.." && pwd)"
 THEME="$COURSE_ROOT/slide-theme/mlcourse-blue-fa.css"
 if [ "${1:-}" = "en" ]; then DECK="slides_en.md"; else DECK="slides.md"; fi
+PORT="${PORT:-8080}"
 
 # font + shared art next to the deck (theme needs them)
 [ -f "$SLIDES_DIR/Vazirmatn.ttf" ] || cp "$COURSE_ROOT/slide-theme/Vazirmatn.ttf" "$SLIDES_DIR/"
@@ -42,7 +44,7 @@ CHROME="$HOME/.cache/puppeteer/chrome-headless-shell/linux-131.0.6778.204/chrome
   export LD_LIBRARY_PATH="/tmp/opencode/chrome-libs/usr/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 cd "$SLIDES_DIR"
-URL="http://localhost:8080/teaching/slides/$DECK"
+URL="http://localhost:$PORT/teaching/slides/$DECK"
 echo ""
 echo "============================================================"
 echo "  SLIDE EDITOR — live preview"

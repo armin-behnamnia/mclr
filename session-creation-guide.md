@@ -188,7 +188,9 @@ Timing is a guide; **priority is not**: at-home problems are always fully solved
 - **No hidden answers leak:** expected values live in `judge/data/` as fixtures, not in plaintext inside the notebook. Never commit solution values into student-visible files.
 - **Partial credit:** each problem worth points per the rubric in `judge/README.md`; the runner prints a total `/ N`.
 - **Determinism:** seeded randomness everywhere; two runs on the same submission give identical scores.
-- **Tested on:** (a) the solution — must score full marks; (b) a deliberately broken attempt — must fail with helpful messages; (c) an empty submission — must not crash, must report 0.
+- **Tested on:** (a) the solution — must score full marks; (b) a deliberately broken attempt — must fail with helpful messages; (c) an empty submission — must not crash, must report 0; (d) a **malformed (non-notebook) file** — `run.py` must print a friendly "not a readable notebook" message and exit 1, never a traceback (wrap notebook loading in try/except; see S1–S3's `run.py`).
+- **Blank-starter interplay:** the untouched student starter must score 0 with a *specific* per-problem hint ("did you fill in cell B2?"). This requires the starter to leave graded variables undefined/commented (see §8). Sort checks inside the judge so cheap probes (e.g. `hasattr`) run before failure-raising probes.
+- **Judge reads the notebook itself:** strip `%magic` and `!shell` lines before `exec` (they are valid in Colab, syntax errors in plain Python).
 - `judge/README.md` contains: how to run, the point rubric, and the deadline/submission policy.
 
 ---
@@ -203,6 +205,11 @@ Timing is a guide; **priority is not**: at-home problems are always fully solved
  - `# PART C — Problem-solving session` (cells for in-class problems, completed together)
 - **Student-facing language: Persian** for all markdown and printed output. Code, variable names, and column names stay in English (they must match the judge).
 - Every cell that plots something keeps its plot in the committed solution notebook.
+- **Generator is the source of truth:** each session has `notebook/build_notebooks.py` that emits BOTH the student starter and the solution notebook. Never hand-edit the `.ipynb` files — fix the generator and regenerate. Before overwriting, regenerate to a scratch dir and diff cell-by-cell: drift means someone hand-patched (recover by rebasing the generator, then regen). Deterministic cell ids make diffs readable.
+- **Student starter is runnable-but-unsolved:** graded cells contain TODO scaffolding with graded variables left undefined, so the starter executes clean AND scores 0/4 with specific "did you fill in cell BN?" hints from the judge.
+- **Strip the PART 0 hook outputs from the student starter** (the reveal must stay a surprise in class); the solution notebook keeps ALL outputs committed.
+- **Colab-installed deps:** any non-stdlib import (e.g. `arabic-reshaper`, `python-bidi`) gets a `%pip -q install ...` line at the top of the setup cell AND the PART 0 demo cell (the demo may run before setup).
+- **Local data fallback:** notebooks that read a CSV ship it in `assets/` and fall back to the URL — class wifi is not a dependency.
 - Notebooks must run top-to-bottom in Google Colab with only the provided `assets/` and standard course installs (one setup cell at the top, identical across all sessions).
 - Markdown between cells always states *why* before *what* — a student reopening the notebook a month later should be able to follow it alone.
 
@@ -213,6 +220,11 @@ Timing is a guide; **priority is not**: at-home problems are always fully solved
 ### 9.1 Language, theme, and format (mandatory)
 - **Language: Persian.** All visible slide content is written in Persian.
 - **RTL:** the course theme handles `direction: rtl` globally. Code blocks automatically stay LTR — never force RTL on code.
+- **RTL math mirroring (hard-won rule):** a `≤`/`≥` sitting inside Persian text gets **mirrored** by the bidi algorithm («وزن ≤ ۱۴» displays as ≥ — silently inverting the lesson!). The fix depends on the target (both verified on rendered output):
+ - **Marp slides, plain prose:** wrap the math fragment in bidi isolates: `وزن ⁦≤ ۱۴⁩ کیلوگرم` (U+2066 / U+2069).
+ - **Marp code spans AND plotly/kaleido diagram labels:** isolates do NOT survive — wrap the operator+number fragment in **LRM marks (U+200E)** instead: `` `وزن ‎≥ ۱۴‎؟` `` resp. `rtl(f"وزن ≥ ۱۴؟")` helpers in the gen scripts.
+ - **Always LOOK at the rendered PNG/PDF** after adding an operator near Persian text — this bug is invisible in the source.
+- **English decks with tables:** use `class: ltr` in front matter (theme class added in the S1–S3 production round) so tables/lists align LTR.
 - **Course theme:** every deck uses `slide-theme/mlcourse-blue-fa.css` at the course root — the **Editorial Blue** theme: flat light-bluish canvas (style extracted from the previous "Data Analysis" course sample.pptx, palette remapped yellow → light blue), small course-name label on every slide, big dark semi-bold flat titles with a blue underline bar, flat tables/callouts, no gradients or glows, and color-coded slide classes (`lead`, `hook`, `wow`, `definition`, `quiz`, `handout`, `codespot`, `focus`). Real page numbers render bottom-left via the theme. **No session may define its own fonts, colors, or layout.** Consistency across all 32 sessions is the point.
 - **Font: Vazirmatn** via `Vazirmatn.ttf` (canonical copy at `slide-theme/Vazirmatn.ttf`, course root). Vazirmatn has complete Persian glyph coverage (letters, ZWNJ, Persian digits) — B Nazanin produced malformed characters in Chrome rendering and is no longer used. `render.sh` copies the font next to the slides automatically — do not commit per-session font edits.
 - **Deck anatomy per slide:** visible Persian content + a Marp presenter-note comment (`<!-- ... -->`) containing the instructor script: timing, what to say (key lines verbatim), which notebook cell/demo to run, expected reactions, misconception alerts, check questions, and fallbacks. A slide without a note is not done — the instructor must never wonder what a slide refers to.
@@ -226,7 +238,7 @@ Timing is a guide; **priority is not**: at-home problems are always fully solved
  3. `slides_en.pdf` — English student deck
  4. `slides.pptx` — editable Persian PowerPoint (via `build_pptx.py`)
 - The instructor never installs anything to render or present.
-- **Live preview (mandatory tool):** every session's `teaching/slides/` folder contains `preview.sh` — an identical copy of the course-level template `slide-theme/preview.sh` (do not fork per session; improvements go into the template and are re-copied). Running `./preview.sh` starts a Marp watch-mode server at `http://localhost:8080`: save `slides.md` (or `slides_en.md`) in any editor and the deck re-renders in about a second; press **P** in the browser for the presenter view (notes + next-slide preview). This is the instructor's self-service editing loop — the markdown is the source of truth, PDFs/PPTX are generated artifacts. Full editing instructions for humans: `slide-theme/PREVIEW-GUIDE.md` (ship it with the course; it documents the markdown mini-language, slide classes, image paths, notes, and troubleshooting).
+- **Live preview (mandatory tool):** every session's `teaching/slides/` folder contains `preview.sh` — an identical copy of the course-level template `slide-theme/preview.sh` (do not fork per session; improvements go into the template and are re-copied). Running `./preview.sh` starts a Marp watch-mode server at `http://localhost:8080` (set `PORT=8081` etc. to run several sessions side by side — the Marp server reads the `PORT` env): save `slides.md` (or `slides_en.md`) in any editor and the deck re-renders in about a second; press **P** in the browser for the presenter view (notes + next-slide preview). This is the instructor's self-service editing loop — the markdown is the source of truth, PDFs/PPTX are generated artifacts. Full editing instructions for humans: `slide-theme/PREVIEW-GUIDE.md` (ship it with the course; it documents the markdown mini-language, slide classes, image paths, notes, and troubleshooting).
 
 ### 9.2 Content rules
 - Visual-first: a slide full of text is a bug. Maximum **~12 words** per slide (junior-tutor budget; 30 is the hard fail line checked by Layer J); diagrams, plots, and animations carry the content.
@@ -234,6 +246,10 @@ Timing is a guide; **priority is not**: at-home problems are always fully solved
 - Slide count guide: **10–20 slides** per teaching session.
 - **Session skeleton (junior-tutor §5, verified by Layer J):** mystery hook → experience the concept (game/vote/demo) → name it (`definition` + `[MISCONCEPTION]` in note) → use it (quiz/vote/code) → **Ship slide** (capability picture: what THEY can do now) → at-home problems (`handout`) → cliffhanger (`wow`) for the next session.
 - End slides, always in this order: the session goal (re-stated), the Ship, the at-home problems, and the judge command.
+- **The judge command must be VISIBLE on a slide**, not only in a note — students photograph slides, not notes.
+- **Quizzes that consume a reveal come AFTER the reveal.** If a quiz asks students to trace something on a picture (tree, plot), that picture must appear on a slide BEFORE the quiz — otherwise the quiz spoils the reveal and doubles as its own answer key.
+- **Honest captions:** a caption must survive contact with the data. If a split's "pure" side holds exactly one animal, say so — the weighted-average lesson depends on it. Never write "both sides stay mixed" when one side is pure.
+- **Recompute every number in every artifact** (slides, notes, problems, solutions, diagrams) against the actual notebook before delivery — and grep for the numbers' other homes afterwards. "1.58 vs 1.57" and "three vs two-and-a-half times" class errors are found by recomputation, not by re-reading.
 - Theme custom classes (Neural Playground theme):
  - `<!-- _class: lead -->` — session title & closing
  - `<!-- _class: hook -->` — hook/demo slides (pink energy)
@@ -242,7 +258,9 @@ Timing is a guide; **priority is not**: at-home problems are always fully solved
  - `<!-- _class: codespot wow -->` — the "magic lines" code spotlight
  - `<!-- _class: dark -->` — serious/dramatic beats
  - `<!-- _class: quiz -->` — consolidation/quiz slides (dashed frame)
- - `<!-- _class: handout -->` — at-home problem slides (purple frame)
+ - `<!-- _class: handout -->` — at-home problem slides (light-blue frame)
+ - `<!-- _class: ltr -->` — LTR escape hatch for English decks (left-aligned text, LTR tables/lists); usable as global `class: ltr` in front matter or composed per slide (`<!-- _class: ltr lead -->`)
+- **Code blocks:** always tag the fence with a language (```` ```python ````) so the theme's hljs palette renders syntax colors (the theme ships the code-card chrome: tint, accent bar, dots, `~/ml-course`). A flat single-color code block is a bug.
 
 ### 9.3 AI-generated slide art (mandatory tool, use it)
 
@@ -253,8 +271,8 @@ Slides become visually rich with generated illustrations. The course has an imag
 - API behind it: model `flux2-dev` at `http://192.168.1.153:30083/v1/images/generations`
 
 **Rules:**
-1. **One visual identity across all 32 sessions** — every prompt MUST include these course art-style keywords (LIGHT theme):
- `kid-friendly flat illustration, bright cream background, vivid purple blue cyan and pink accents, soft glow, clean vector shapes, no text`
+1. **One visual identity across all 32 sessions** — every prompt MUST include these course art-style keywords (LIGHT theme, **blue editorial identity** — the theme is `mlcourse-blue-fa`, the older cream/purple keyword set is superseded, see §13):
+ `flat editorial illustration, light blue background, soft blue and teal accents, clean vector shapes, minimal shading, no text`
 2. **No text in images** — slide text is rendered by the theme; generated text renders badly. Append `no text` to every prompt.
 3. **Deterministic:** always pass an explicit seed. Save the prompt + seed + size of every generated image in `assets/images-manifest.md` so any image can be regenerated or restyled later.
 4. **Shared template art (used by every session, copied by render.sh):** `slide-theme/shared/` holds `shared_hero.png` (lead slides), `shared_closing.png` (closing slides), and `shared_band.png` (goal/recap slides). Decks reference them as `![hero](shared_hero.png)` etc. — never copy them into `assets/` manually; render.sh handles it. Manifest with prompts/seeds: `slide-theme/shared/README.md`.
@@ -266,6 +284,18 @@ Slides become visually rich with generated illustrations. The course has an imag
 5. Images land in the session's `assets/` folder, are referenced from `slides.md` like any image, and inherit the theme's framed/glowing image style automatically.
 6. Keep generated art **supportive, not decorative noise**: one strong image per slide, never more.
 7. **Deck weight budget:** the full PDF deck must stay **under ~8 MB**. Generated images at 512-width PNG are fine; avoid 1024x1024+ art unless the lead slide needs it (use the shared hero instead). If a deck exceeds the budget, downscale images before re-rendering.
+8. **If a figure carries labels, it is not AI art** — the API garbles text even with `no text` in the prompt (S2's tree_anatomy lesson). Labelled figures are code-generated diagrams (§9.4).
+
+### 9.4 Code-generated diagrams on slides (mandatory rules)
+
+Flowcharts, anatomy figures, data tables, box-and-balls figures — anything with exact text — is generated by a **committed script** (`assets/gen_<name>.py`) recorded in `assets/images-manifest.md`. Rules (learned from S1–S3 review):
+- **Font:** Vazirmatn, EVERYWHERE. matplotlib: register from file (`font_manager.fontManager.addfont(<course root>/slide-theme/Vazirmatn.ttf)` + `rcParams["font.family"]`). plotly/kaleido: `font_family="Vazirmatn"` resolves from the system fontconfig.
+- **Boxes are sized from MEASURED text** (renderer extents) with padding — never eyeballed widths; text must never touch or cross a border.
+- **Titles/labels sit in a reserved zone INSIDE their card** (e.g. a tinted title band) — text placed at the card-top coordinate lands on the border line.
+- **Arrows connect box OUTLINES** (border-intersection points + small gap), and node positions keep clear corridors so no edge or leader line crosses a box.
+- **The readability floor applies INSIDE images:** judge text size and line weight on the rendered PDF page at presentation zoom, not on the export canvas; fix the generator, re-render.
+- **RTL math in images:** bidi isolates are silently ignored by plotly/kaleido AND matplotlib — use LRM marks (U+200E) around operator+number fragments, then inspect the PNG.
+- Superseded assets stay listed in the manifest as superseded (with why), never silently deleted or orphaned.
 
 ---
 

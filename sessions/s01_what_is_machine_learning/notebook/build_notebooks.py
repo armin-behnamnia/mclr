@@ -1,25 +1,37 @@
-"""STALE — do not run. The Session 1 notebooks were hand-refined after the single-demo hook
-rewrite (Animal Game) and the Persian-matplotlib fa() fix; this generator predates those changes
-and would overwrite them. The .ipynb files are the artifacts of record. Regenerating this script
-to match is deferred until the next content-level change to Session 1 (regeneration workflow §14).
-
-Original purpose: Generate the student and solution notebooks for Session 1.
+"""Generate the student and solution notebooks for Session 1 (source of truth).
 
 Run:  python build_notebooks.py
-Outputs: notebook/s01_notebook.ipynb (student)
-         notebook/s01_notebook_solution.ipynb (instructor)
+Outputs: s01_notebook.ipynb (student — PART B cells are TODO starters)
+         s01_notebook_solution.ipynb (instructor — full answers)
+
+After regenerating, commit outputs into BOTH notebooks once:
+    jupyter nbconvert --to notebook --execute --inplace s01_notebook.ipynb
+    jupyter nbconvert --to notebook --execute --inplace s01_notebook_solution.ipynb
+Then strip the PART 0 demo outputs from the STUDENT notebook only
+(the hook must stay a surprise):  python build_notebooks.py --strip-demo-output
+
+The judge must score 4/4 on the solution notebook and 0/4 (helpful messages,
+no crash) on the untouched student notebook — verify after every change.
 """
-import json, os, uuid
+import json, os, sys
+
+STABLE = []  # running counter for stable cell ids
+
+
+def _cid():
+    STABLE.append(1)
+    return f"s01-{len(STABLE):02d}"
 
 
 def md(src):
-    return {"cell_type": "markdown", "id": uuid.uuid4().hex[:8],
-            "metadata": {}, "source": src}
+    return {"cell_type": "markdown", "id": _cid(),
+            "metadata": {}, "source": src.splitlines(keepends=True)}
 
 
 def code(src):
-    return {"cell_type": "code", "id": uuid.uuid4().hex[:8],
-            "execution_count": None, "metadata": {}, "outputs": [], "source": src}
+    return {"cell_type": "code", "id": _cid(),
+            "execution_count": None, "metadata": {}, "outputs": [],
+            "source": src.splitlines(keepends=True)}
 
 
 def nb(cells):
@@ -34,99 +46,98 @@ def nb(cells):
 
 
 def write(path, cells):
+    STABLE.clear()
     with open(path, "w") as f:
-        json.dump(nb(cells), f, indent=1)
+        json.dump(nb(cells), f, indent=1, ensure_ascii=False)
     print("wrote", path)
 
 
+# ---------------------------------------------------------------- PART 0 (hook demo)
+# ONE demo, four printed beats. The slide presenter notes and teaching-notes.md
+# reference these exact «مرحلهٔ N» markers — if you change the beats, change
+# slides.md slide 3/4/5 notes and teaching-notes.md in the same commit.
+DEMO0 = md("""\
+# PART 0 — نمایش ویژهٔ هوش مصنوعی
+
+**بازیِ حیوانات.** ماشین فقط ۸ حیوان با برچسب می‌بیند؛ بعد خودش یک خط می‌کشد و به حیواناتی که هرگز ندیده جواب می‌دهد.
+""")
+
+DEMO0_CELL = code("""\
+# دمو: بازیِ حیوانات — ماشین از ۸ مثال یک قانون یاد می‌گیرد
+%pip -q install arabic-reshaper python-bidi  # needed on Colab; already installed locally
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+import matplotlib.pyplot as plt
+import arabic_reshaper
+from bidi.algorithm import get_display
+
+def fa(text):
+    # Persian text for matplotlib: shapes + orders it correctly
+    return get_display(arabic_reshaper.reshape(str(text)))
+
+# مرحلهٔ ۱: همهٔ چیزی که ماشین می‌بیند — ۸ حیوان، هر کدام دو عدد و یک برچسب
+print("——— مرحلهٔ ۱ · جدول ———")
+animals = pd.DataFrame({
+    "وزن": [4.5, 3.0, 6.0, 5.0, 22, 32, 28, 38],      # کیلوگرم
+    "طول_گوش": [5, 7, 4, 6, 9, 12, 11, 13],            # سانتی‌متر
+    "برچسب": ["گربه", "گربه", "گربه", "گربه", "سگ", "سگ", "سگ", "سگ"],
+}, index=["پرشین", "سیامی", "گارفیلد", "شارتز", "بولداگ", "آلمانی", "گلدن", "دابلمان"])
+print("همهٔ چیزی که ماشین می‌بیند (فقط ۸ سطر):")
+print(animals, "\\n")
+
+# مرحلهٔ ۲: یاد بگیر — ماشین خودش قانون را پیدا می‌کند (بی‌سروصدا!)
+model = DecisionTreeClassifier(max_depth=1, random_state=42)
+model.fit(animals[["وزن", "طول_گوش"]], animals["برچسب"])
+
+# مرحلهٔ ۳: خطِ ماشین را ببین — هیچ انسانی این خط را نداد
+print("——— مرحلهٔ ۳ · خطِ ماشین ———")
+plt.figure(figsize=(8, 4))
+cats = animals[animals["برچسب"] == "گربه"]; dogs = animals[animals["برچسب"] == "سگ"]
+plt.scatter(cats["وزن"], cats["طول_گوش"], c="steelblue", s=130, label="گربه")
+plt.scatter(dogs["وزن"], dogs["طول_گوش"], c="darkorange", s=130, label="سگ")
+plt.axvline(14, color="crimson", lw=2, ls="--")
+plt.text(15, 12.2, fa("خطی که ماشین خودش کشید"), color="crimson")
+plt.xlabel(fa("وزن (کیلوگرم)")); plt.ylabel(fa("طول گوش (سانتی‌متر)")); plt.legend()
+plt.show()
+
+# مرحلهٔ ۴: امتحان! حیواناتی که ماشین هرگز ندیده است
+print("——— مرحلهٔ ۴ · امتحان با حیوانات ندیده ———")
+new_animals = pd.DataFrame({
+    "وزن": [35, 7, 2, 3000],
+    "طول_گوش": [10, 5, 10, 20],
+}, index=["گرگ", "گربهٔ همسایه", "توله‌سگ", "فیل"])
+print("پاسخ ماشین به حیواناتی که هرگز ندیده بود:")
+answers = model.predict(new_animals[["وزن", "طول_گوش"]])
+for name, ans in zip(new_animals.index, answers):
+    print(f"  {name:12} ← {ans}")
+
+# کل رازِ مرحلهٔ ۲ فقط یک سؤال بود: «وزن ⁦≤ ۱۴⁩ کیلوگرم؟» — این کلمهٔ کلیدی جلسه‌های ۲ و ۳ است.
+print("\\nکل رازِ ماشین فقط یک سؤال بود: «وزن ⁦≤ ۱۴⁩ کیلوگرم؟»")
+""")
+
 # ---------------------------------------------------------------- setup cell
-SETUP = """\
+SETUP_MD = None  # setup cell arrives right after the PART A header
+SETUP = code("""\
 # COURSE SETUP — identical in every session. Just run it. (5 seconds)
 %matplotlib inline
+%pip -q install arabic-reshaper python-bidi  # needed on Colab; already installed locally
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 
+import arabic_reshaper
+from bidi.algorithm import get_display
+
+def fa(text):
+    # Persian text for matplotlib: shapes + orders it correctly
+    return get_display(arabic_reshaper.reshape(str(text)))
+
 plt.rcParams["figure.figsize"] = (8, 4)
 print("Setup OK — let's build some AI.")
-"""
+""")
 
-# ---------------------------------------------------------------- PART 0 (demos)
-part_0 = [
-md("""\
-# PART 0 — نمایش ویژهٔ هوش مصنوعی
-*(دموهای شروع جلسه — مدرس این سلول‌ها را در ۵ دقیقهٔ اول اجرا می‌کند. به‌ترتیب، با اجرای نمایشی!)*
-"""),
-md("""\
-## دمو ۱ — ذهن‌خوان
-عددی بین ۱ تا ۲۰ فکر کن... ماشین می‌گوید کوچک است یا بزرگ.
-"""),
-code("""\
-# دمو ۱: ذهن‌خوان — عدد به کوچک/بزرگ
-import numpy as np
-from sklearn.tree import DecisionTreeClassifier
-
-X = [[n] for n in range(1, 21)]
-y = ["small" if n <= 7 else "big" for n in range(1, 21)]
-mind_reader = DecisionTreeClassifier().fit(X, y)
-
-print("عددی بین ۱ تا ۲۰ فکر کن. ماشین می‌گوید: کوچک یا بزرگ؟")
-for n in (3, 12, 19, 7, 20):
-    verdict = "کوچک" if mind_reader.predict([[n]])[0] == "small" else "بزرگ"
-    print(f"  {n:>2} → {verdict}")
-"""),
-md("""\
-## دمو ۲ — هنرمند فوری
-همان تصویر، از چشم ماشین: عدد خام ← لبه ← تار ← خطوط.
-"""),
-code("""\
-# دمو ۲: چهار چشمِ ماشین روی یک تصویر
-import matplotlib.pyplot as plt
-from scipy import ndimage
-
-rng = np.random.default_rng(42)
-img = ndimage.gaussian_filter(rng.random((64, 64)), 3)
-
-fig, axes = plt.subplots(1, 4, figsize=(14, 3.5))
-views = [(img, "عدد خام"), (ndimage.sobel(img), "فیلتر لبه"),
-         (ndimage.gaussian_filter(img, 1), "فیلتر تار"),
-         (np.abs(ndimage.laplace(img)), "فیلتر خطوط")]
-for ax, (im, title) in zip(axes, views):
-    ax.imshow(im, cmap="viridis"); ax.set_title(title); ax.axis("off")
-plt.suptitle("این همان چیزی است که ماشین می‌بیند", y=1.02)
-plt.tight_layout(); plt.show()
-"""),
-md("""\
-## دمو ۳ — فالگیر
-ماشینی که ۸۹۱ مسافر واقعی سال ۱۹۱۲ را مطالعه کرده. ازش بپرس کی زنده می‌ماند!
-"""),
-code("""\
-# دمو ۳: فالگیر تایتانیک — از قبل آموزش دیده است
-import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
-
-titanic_demo = pd.read_csv(
-    "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
-).rename(columns=str.lower).dropna(subset=["age", "embarked"])
-titanic_demo["is_female"] = (titanic_demo["sex"] == "female").astype(int)
-
-fortune_teller = DecisionTreeClassifier(max_depth=3, random_state=42).fit(
-    titanic_demo[["pclass", "is_female", "age", "fare"]], titanic_demo["survived"])
-
-cases = [(1, 1, 17, 100, "دختر ۱۷ سالهٔ کلاس ۱، کرایهٔ ۱۰۰ دلار"),
-         (3, 0, 25, 7,   "پسر ۲۵ سالهٔ کلاس ۳، کرایهٔ ۷ دلار"),
-         (1, 0, 50, 60,  "مرد ۵۰ سالهٔ کلاس ۱، کرایهٔ ۶۰ دلار"),
-         (3, 1, 5, 20,   "دختر ۵ سالهٔ کلاس ۳، کرایهٔ ۲۰ دلار")]
-for pclass, is_female, age, fare, desc in cases:
-    pred = fortune_teller.predict([[pclass, is_female, age, fare]])[0]
-    print(f"{desc} → {'زنده می‌ماند' if pred else 'زنده نمی‌ماند'}")
-"""),
-]
-
-# ---------------------------------------------------------------- PART A
-part_a = [
-md("""\
+HEADER_A = md("""\
 # جلسهٔ ۱ — یادگیری ماشین چیست؟
 ## روز اول — تو یک هوش مصنوعی می‌سازی
 
@@ -138,12 +149,17 @@ md("""\
 
 # PART A — جلسهٔ تدریس
 *(این بخش را با هم در کلاس پر می‌کنیم)*
-"""),
-code(SETUP),
+""")
+
+# ---------------------------------------------------------------- PART A
+part_a = [
+SETUP,
 md("""\
 ## A1 — بازی میوه: ویژگی‌ها و برچسب‌ها
 
-هر نمونهٔ یادگیری ماشین با **ویژگی‌ها** (سرنخ‌ها) و یک **برچسب** (پاسخ) توصیف می‌شود.
+هر نمونهٔ یادگیری ماشین با **ویژگی (Feature)** — یعنی سرنخ — و یک **برچسب (Label)** — یعنی پاسخ — توصیف می‌شود.
+هر سطر (ویژگی‌ها + برچسب) یک **نمونه (Example)** است.
+
 سلول را اجرا کن و بازی کن: ستون پاسخ را بپوشان و فقط از سرنخ‌ها میوه را حدس بزن.
 """),
 code("""\
@@ -169,7 +185,7 @@ print(f"I think '{most_useful_feature}' is the most useful clue.")
 md("""\
 ## A3 — یادگیری نظارت‌شده: پنهان‌کردن پاسخ
 
-یادگیری نظارت‌شده = یادگیری از نمونه‌هایی **که پاسخ دارند**.
+یادگیری نظارت‌شده (Supervised Learning) = یادگیری از نمونه‌هایی **که پاسخ دارند**.
 مدل جدول کامل را درس می‌خواند... بعد **برچسب را پنهان می‌کنیم** و با نمونه‌های جدید ازش امتحان می‌گیریم.
 """),
 code("""\
@@ -182,15 +198,24 @@ print("امتحان (فقط ویژگی — برچسب پنهان است!):")
 display(quiz_table.head(3))
 """),
 md("""\
-## A4 — تایتانیک: ۸۹۱ مسافر، ۸۹۱ سطر
+## A4 — تایتانیک: ۸۹۱ مسافر
 
 هر سطر یک زندگی است. هر ستون یک سرنخ. برچسب `survived` است (۱ = زنده ماند، ۰ = مرد).
+
+«تنها» ریسکِ دیتای واقعی: بعضی سطرها اطلاعات ناقص دارند — پایین می‌بینی که فقط سطرهای کامل به مدل می‌رسند.
 """),
 code("""\
-titanic = pd.read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")\\
-           .rename(columns=str.lower)
+# دیتاست در پوشهٔ assets دوره ذخیره شده؛ اگر نبود، از روی اینترنت تازه می‌شود.
+for _src in ("assets/titanic.csv", "../assets/titanic.csv",
+             "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"):
+    try:
+        titanic = pd.read_csv(_src)
+        break
+    except Exception:
+        continue
+titanic = titanic.rename(columns=str.lower)
 titanic = titanic[["survived", "pclass", "sex", "age", "fare", "embarked"]].dropna()
-print(f"{len(titanic)} passengers are ready to teach our model.")
+print(f"از ۸۹۱ مسافر، {len(titanic)} نفر اطلاعات کامل دارند؛ فقط همین‌ها مدل را آموزش می‌دهند.")
 titanic.head()
 """),
 md("""\
@@ -201,7 +226,7 @@ md("""\
 code("""\
 titanic["survived"].map({1: "survived", 0: "did not"}).value_counts().plot(
     kind="bar", color=["tomato", "seagreen"], rot=0)
-plt.title("تعداد بازماندگان تایتانیک"); plt.ylabel("مسافر")
+plt.title(fa("تعداد بازماندگان تایتانیک")); plt.ylabel(fa("مسافر"))
 plt.show()
 """),
 md("""\
@@ -210,11 +235,11 @@ md("""\
 code("""\
 fig, axes = plt.subplots(1, 2, figsize=(12, 4))
 titanic.groupby("sex")["survived"].mean().plot(kind="bar", ax=axes[0], color="orchid", rot=0)
-axes[0].set_title("نرخ بقا بر حسب جنسیت"); axes[0].set_ylabel("سهم زندگان")
+axes[0].set_title(fa("نرخ بقا بر حسب جنسیت")); axes[0].set_ylabel(fa("سهم زندگان"))
 titanic.groupby("pclass")["survived"].mean().plot(kind="bar", ax=axes[1], color="steelblue", rot=0)
-axes[1].set_title("نرخ بقا بر حسب کلاس مسافر")
+axes[1].set_title(fa("نرخ بقا بر حسب کلاس مسافر"))
 plt.show()
-# زنِ کلاس-۱ بودن در سال ۱۹۱۲ تقریباً بلیتِ بقا بود.
+# زنِ کلاس-۱ بودن در سال ۱۹۱۲ تقریباً بلیتِ بقا بود — نگاه کن: ۷۵٪ در برابر ۲۰٪!
 """),
 md("""\
 ## A7 تا A9 — لحظهٔ جادویی: ساخت هوش مصنوعی در ۳ خط
@@ -230,7 +255,8 @@ X.head(3)
 """),
 code("""\
 # A8 — سه خط جادویی. شمرده یک دو سه، همه بگویید: یاد بگیر!
-model = DecisionTreeClassifier(max_depth=3, random_state=42)  # ۱. انتخاب دانش‌آموز
+# «model» یعنی مدل (Model): دانش‌آموزی که مثال‌های حل‌شده را می‌خواند
+model = DecisionTreeClassifier(max_depth=3, random_state=42)  # ۱. انتخاب دانش‌آموز (مدل)
 model.fit(X, y)                                               # ۲. درس خواندن
 print(f"تمام. مدل همین الان {len(X)} زندگی را در کمتر از یک ثانیه خواند.")
 """),
@@ -242,26 +268,32 @@ print("زنده می‌ماند" if verdict == 1 else "زنده نمی‌مان�
 
 # و نگاه کن — قاعده‌هایی که پیدا کرد فقط چند سؤال است. خودت هم می‌توانستی بکشی.
 plt.figure(figsize=(14, 7))
-plot_tree(model, feature_names=list(X.columns), class_names=["mord", "zande"],
+plot_tree(model, feature_names=list(X.columns),
+          class_names=[fa("زنده نمی‌ماند"), fa("زنده می‌ماند")],
           filled=True, fontsize=10, impurity=False)
-plt.title("قاعده‌هایی که ماشین یاد گرفت — فقط چند سؤال است!")
+plt.title(fa("قاعده‌هایی که ماشین یاد گرفت — فقط چند سؤال است!"))
 plt.show()
 """),
 ]
 
 # ---------------------------------------------------------------- PART B (at-home)
-part_b_student = [
-md("""\
+# TWO variants: student starter (TODO — judge scores 0/4 untouched) and solution
+# (judge scores 4/4). The starter must stay runnable-but-unsolved: variables the
+# judge grades are left UNDEFINED (named in comments) so the judge answers
+# "did you fill in cell BN?" instead of crashing or passing.
+part_b_head = md("""\
 ---
 
 # PART B — تمرین‌های خانه
-**مهلت: قبل از جلسهٔ حل مسئله.** پاسخ‌ها را همین‌جا در همین سلول‌ها بنویس.
+**مهلت: قبل از جلسهٔ حل مسئله.** پاسخ‌ها را همین‌جا در همین سلول‌ها بنویس. (حدود ۲۰ تا ۳۰ دقیقه طول می‌کشد.)
 هر وقت خواستی خودت را نمره بده: `python judge/run.py s01_notebook.ipynb`
+اولین اجرا همهٔ تمرین‌ها را قرمز نشان می‌دهد — عادی است! آن را با پاسخ‌های خودت سبز کن.
 
 **چه چیزی باید یاد بگیری:** این تمرین‌ها مطمئن می‌شوند که خودت، تنها، می‌توانی دیتاست بسازی،
 مدل آموزش بدهی و پیش‌بینی کنی.
-"""),
-md("""\
+""")
+
+B1_MD = md("""\
 ## تمرین B1 — کارآگاه ویژگی‌ها (۱ نمره)
 
 یک دوست می‌خواهد **قبولی یک دانش‌آموز در آزمون** را پیش‌بینی کند و این ویژگی‌ها را پیشنهاد می‌دهد:
@@ -270,11 +302,19 @@ md("""\
 
 فقط ویژگی‌هایی را که واقعاً می‌توانند به پیش‌بینی قبولی کمک کنند، به‌صورت یک **لیست** پایتونی بنویس.
 (راهنما: آیا مدل از اسمِ کسی چیزی مفید یاد می‌گیرد؟)
-"""),
-code("""\
-B1_good_features = ["hours_studied", "previous_score"]  # <-- پاسخ تو (لیستی از رشته‌ها)
-"""),
-md("""\
+""")
+
+B1_STU = code("""\
+# پاسخ تو این‌جا — خط زیر را از توضیح بیرون بیاور و خودت کاملش کن:
+# B1_good_features = ["..."]   # <-- فقط سرنخ‌هایی که واقعاً قبولی را پیش‌بینی می‌کنند
+""")
+
+B1_SOL = code("""\
+# answer key: only these two carry real signal about passing a test
+B1_good_features = ["hours_studied", "previous_score"]  # پاسخ نهایی
+""")
+
+B2_MD = md("""\
 ## تمرین B2 — دیتاست خودت را بساز (۱ نمره)
 
 حالا تو معلمی. یک دیتاست کوچک (یک DataFrame پانداسی) از **حداقل ۴ حیوان** بساز
@@ -283,21 +323,51 @@ md("""\
 - دقیقاً همین ۳ ستون،
 - حداقل ۴ سطر، هر کدام یک حیوان متفاوت،
 - `size` یکی از `"small"`، `"medium"`، `"large"` باشد و `can_fly` عدد `0` یا `1`.
-"""),
-code("""\
+""")
+
+B2_STU = code("""\
+# پاسخ تو این‌جا — الگوی زیر را از توضیح بیرون بیاور و با حیواناتِ خودت پرش کن:
+# B2_animals = pd.DataFrame({
+#     "size":    ["small", "large", "medium", "small"],   # فقط: "small" یا "medium" یا "large"
+#     "can_fly": [0, 0, 0, 1],                            # فقط 0 یا 1
+#     "animal":  ["cat", "elephant", "dog", "sparrow"],   # ۴ حیوان متفاوت (یا بیشتر)
+# })
+""")
+
+B2_SOL = code("""\
 B2_animals = pd.DataFrame({
     "size":     ["small", "large", "medium", "small"],
     "can_fly":  [0, 0, 0, 1],
     "animal":   ["cat", "elephant", "dog", "sparrow"],
 })
-# ^^^ با حیواناتِ خودت جایگزین کن. اسم ستون‌ها دقیقاً همین بماند: size, can_fly, animal
-"""),
-md("""\
+# اسم ستون‌ها دقیقاً همین بماند: size, can_fly, animal
+B2_animals
+""")
+
+B3_MD = md("""\
 ## تمرین B3 — سه خط جادویی (۱ نمره)
 
-برای آموزش یک درخت تصمیم روی دیتاست حیواناتِ خودت، جاهای خالی را کامل کن.
-"""),
-code("""\
+برای آموزش یک درخت تصمیم روی دیتاست حیواناتِ خودت، سه جای `...` را کامل کن
+(اگر تمرین B2 را نکرده‌ای، اول برگرد سراغش — این سلول به آن نیاز دارد).
+""")
+
+B3_STU = code("""\
+if "B2_animals" not in dir():
+    print("اول تمرین B2 را کامل کن — این سلول به دیتاست تو (B2_animals) نیاز دارد.")
+else:
+    B2_animals_num = B2_animals.copy()
+    B2_animals_num["size_num"] = B2_animals_num["size"].map({"small": 0, "medium": 1, "large": 2})
+
+    B3_X = B2_animals_num[["size_num", "can_fly"]]     # ویژگی‌ها
+    B3_y = B2_animals_num["animal"]                    # برچسب
+
+    B3_model = ...      # TODO: یک DecisionTreeClassifier بساز (random_state=42)
+    ...                 # TODO: آن را با B3_X و B3_y درسش بده — همان دستور fit
+    B3_prediction = ... # TODO: با .predict بپرس: اندازهٔ متوسط (size_num=1)، پرواز ندارد (can_fly=0) ← چه حیوانی؟
+    print("مدل می‌گوید حیوان متوسطِ بی‌پرواز این است:", B3_prediction)
+""")
+
+B3_SOL = code("""\
 B2_animals_num = B2_animals.copy()
 B2_animals_num["size_num"] = B2_animals_num["size"].map({"small": 0, "medium": 1, "large": 2})
 
@@ -306,19 +376,32 @@ B3_y = B2_animals_num["animal"]                    # برچسب
 
 B3_model = DecisionTreeClassifier(random_state=42)  # ۱. انتخاب دانش‌آموز
 B3_model.fit(B3_X, B3_y)                            # ۲. درس خواندن
-B3_prediction = B3_model.predict([[1, 0]])[0]       # ۳. سؤال: اندازه=متوسط، پرواز=۰ ← ؟
+B3_prediction = B3_model.predict(pd.DataFrame([{"size_num": 1, "can_fly": 0}]))[0]  # ۳. سؤال
 print("مدل می‌گوید حیوان متوسطِ بی‌پرواز این است:", B3_prediction)
-"""),
-md("""\
-## تمرین B4 — فالگیر بقا (۱ نمره)
+""")
+
+B4_MD = md("""\
+## تمرین B4 — پیش‌بینی‌گر بقا (۱ نمره)
 
 مدل تایتانیکِ خودت را آموزش بده (مثل کلاس، با `max_depth=3` و `random_state=42`)
 و بقا را برای این مسافر پیش‌بینی کن: **کلاس ۳، پسر ۱۲ ساله، کرایهٔ ۷.۵.**
 
 بعد جواب بده: او زنده ماند؟ عدد `1` (زنده ماند) یا `0` (نماند) را در `B4_answer` بگذار.
-"""),
-code("""\
-# داده از قبل بارگذاری شده (titanic). مثل سلول A7، دقیقاً X و y را بساز.
+""")
+
+B4_STU = code("""\
+# داده از قبل بارگذاری شده (titanic). مثل سلول A7، دقیقاً X و y را بساز:
+B4_X = ...   # TODO: همان ۴ ستونِ A7 (pclass, age, fare, is_female)
+B4_y = ...   # TODO: ستون پاسخ (survived)
+
+B4_model = ...   # TODO: بساز (max_depth=3, random_state=42) و با B4_X و B4_y درسش بده
+
+new_passenger = pd.DataFrame([{"pclass": 3, "age": 12, "fare": 7.5, "is_female": 0}])
+B4_answer = ...  # TODO: int( پیش‌بینی مدل برای مسافر تازه ) — باید 0 یا 1 باشد
+""")
+
+B4_SOL = code("""\
+# داده از قبل بارگذاری شده (titanic). مثل سلول A7:
 B4_X = X.copy()
 B4_y = y.copy()
 
@@ -326,24 +409,25 @@ B4_model = DecisionTreeClassifier(max_depth=3, random_state=42)
 B4_model.fit(B4_X, B4_y)
 
 new_passenger = pd.DataFrame([{"pclass": 3, "age": 12, "fare": 7.5, "is_female": 0}])
-B4_answer = int(B4_model.predict(new_passenger)[0])   # باید 1 یا 0 باشد
-print("فالگیر می‌گوید:", "زنده می‌ماند" if B4_answer == 1 else "زنده نمی‌ماند")
-"""),
-md("""\
+B4_answer = int(B4_model.predict(new_passenger)[0])   # باید 1 یا 0 باشد (جواب درست: 0)
+print("مدل می‌گوید:", "زنده می‌ماند" if B4_answer == 1 else "زنده نمی‌ماند")
+""")
+
+SHIP_MD = md("""\
 ---
 
 # تحویل بده!
 
 وقتی هر چهار تمرین از داوری سربلند بیرون آمد:
 1. این نت‌بوک را ذخیره کن.
-2. آن را در مخزن گیت‌هاب دوره‌ات commit کن (معلمت نشانت می‌دهد، یا راهنمای کلاس را ببین).
+2. آن را در مخزن گیت‌هاب دوره‌ات commit کن — در پوشهٔ جلسه این سه دستور:
+   `git add .` ← `git commit -m "S1: my first model"` ← `git push`
 3. به خانواده‌ات نشان بده: *«امروز یک هوش مصنوعی ساختم.»* — چون واقعاً ساختی.
-"""),
-]
+""")
 
-part_b_solution_note = md("""\
-> **یادداشت مدرس (نسخهٔ پاسخ):** سلول‌های زیر پاسخ درست را دارند.
-> در نسخهٔ دانش‌آموز همین سلول‌ها TODOهای راهنما دارند.
+SOL_NOTE = md("""\
+> **یادداشت مدرس (نسخهٔ پاسخ):** سلول‌های B پاسخ کامل دارند.
+> در نسخهٔ دانش‌آموز همین سلول‌ها الگوی TODO با `...` هستند.
 """)
 
 # ---------------------------------------------------------------- PART C
@@ -401,8 +485,23 @@ md("""\
 """),
 ]
 
-notebook_cells = part_0 + part_a + part_b_student + part_c
-solution_cells = part_0 + part_a + [part_b_solution_note] + part_b_student + part_c
+student_cells = ([DEMO0, DEMO0_CELL, HEADER_A] + part_a
+                 + [part_b_head, B1_MD, B1_STU, B2_MD, B2_STU, B3_MD, B3_STU,
+                    B4_MD, B4_STU, SHIP_MD] + part_c)
+solution_cells = ([DEMO0, DEMO0_CELL, HEADER_A] + part_a
+                  + [part_b_head, SOL_NOTE, B1_MD, B1_SOL, B2_MD, B2_SOL,
+                     B3_MD, B3_SOL, B4_MD, B4_SOL, SHIP_MD] + part_c)
 
-write(os.path.join(os.path.dirname(__file__), "s01_notebook.ipynb"), notebook_cells)
-write(os.path.join(os.path.dirname(__file__), "s01_notebook_solution.ipynb"), solution_cells)
+out_dir = os.path.dirname(os.path.abspath(__file__))
+write(os.path.join(out_dir, "s01_notebook.ipynb"), student_cells)
+write(os.path.join(out_dir, "s01_notebook_solution.ipynb"), solution_cells)
+
+if "--strip-demo-output" in sys.argv:
+    for name in ("s01_notebook.ipynb",):
+        p = os.path.join(out_dir, name)
+        d = json.load(open(p))
+        cell = d["cells"][1]  # the PART 0 demo cell — hook must stay a surprise
+        cell["outputs"] = []
+        cell["execution_count"] = None
+        json.dump(d, open(p, "w"), indent=1, ensure_ascii=False)
+        print("stripped PART 0 outputs from", name)

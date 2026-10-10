@@ -14,12 +14,13 @@
 | Features / labels | clues and the answer in a guessing game | in real datasets nobody hands you tidy "clues" — feature *engineering* is work (surfaced in Session 2) |
 | Supervised learning | studying with the teacher's answer key, then the exam with answers hidden | no teacher "watches" the model — the word is historical (surfaced the moment it is introduced) |
 | The trained tree | the red line the machine drew in the animal game | the line looks like magic but is just one learned question — no magic at all (surfaced at the end of this session) |
+| The model's limits | a mirror of its 712 examples — good data, good mirror; unfair data, unfair mirror | a mirror is passive; the model also GUESSES beyond its examples (the puppy) — that guessing is the point and the danger (S1 closer, then S4 overfitting) |
 
 One analogy per concept, reused across the whole course — no ad-hoc metaphors in decks or narration.
 
 ## Ship showcase plan (capability picture)
 
-The Ship is the student's own Titanic survival model (notebook cells B3–B4) plus their first portfolio commit. The showcase moment: the hook's animal game returns in Segment E as *the same thing they just built* — "the red line from the start of class? fit() drew it. You just did that yourself, on real data." The closing slide carries the capability picture (magic-lines art + "the model is YOURS tonight").
+The Ship is the student's own Titanic survival model (trained in class in cells A7–A9, then re-trained solo in at-home cell B4) plus their first portfolio commit. The showcase moment: the hook's animal game returns in Segment E as *the same thing they just built* — "the red line from the start of class? fit() drew it. You just did that yourself, on real data." The closing slide carries the capability picture (magic-lines art + "the model is YOURS tonight").
 
 ## Cliffhanger script (multi-session)
 
@@ -30,13 +31,14 @@ Final line, delivered after the at-home handout, pointing at Session 2:
 
 ## 1. Hook script — "The Animal Game" (0:00–5:00)
 
-Run the single PART 0 demo cell (zero-terminal rule — no scripts, no terminal), with maximum showmanship. Dim the lights if possible. One cell, three beats — the output carries the whole story.
+Run the single PART 0 demo cell (zero-terminal rule — no scripts, no terminal), with maximum showmanship. Dim the lights if possible. One cell, four beats — the cell prints a «——— مرحلهٔ N · … ———» marker before each beat, and slide/notes references use those exact markers.
 
-| # | Beat | Script | Expected reaction |
+| # | Beat (printed marker) | Script | Expected reaction |
 |---|------|--------|-------------------|
-| 1 | **The table** — the machine's entire world: 8 animals, two numbers each (weight, ear length) + a label (cat/dog) | "This table is ALL the machine gets. Eight rows. Nobody wrote a single rule." | "So what? It's just a table." — let them underestimate it |
-| 2 | **The line** — the scatter plot: from those 8 rows the machine drew a red dashed line, cats behind, dogs in front | "No human drew this line. The machine found it hiding in those 8 rows." | "Where did the line come from?!" — let it hang until slide 9 |
-| 3 | **The quiz** — verdicts on animals it has NEVER seen: wolf→dog (right), neighbor's cat→cat (right), puppy→cat (WRONG — a 2 kg dog!), elephant→dog (it only knows two words) | "The line is a guess from 8 examples. Near the line, the guess breaks. Sometimes machines guess wrong — Session 2 fixes that." | Laughter at the elephant + "Why did it get the puppy wrong?!" |
+| 1 | **The table** («مرحلهٔ ۱ · جدول») — the machine's entire world: 8 animals, two numbers each (weight, ear length) + a label (cat/dog) | "This table is ALL the machine gets. Eight rows. Nobody wrote a single rule." | "So what? It's just a table." — let them underestimate it |
+| 2 | **The silent fit** («مرحلهٔ ۲» — one line of code, nothing prints) | "Watch: it just studied. That's it. That's the whole spell." | "Wait — that was it?" |
+| 3 | **The line** («مرحلهٔ ۳ · خطِ ماشین») — the scatter plot: the machine's own red dashed line, cats behind, dogs in front | "No human drew this line. The machine found it hiding in those 8 rows." | "Where did the line come from?!" — let it hang until slide 9 |
+| 4 | **The quiz + the reveal** («مرحلهٔ ۴ · امتحان») — verdicts on animals it has NEVER seen: wolf→dog (right), neighbor's cat→cat (right), puppy→cat (WRONG — a 2 kg dog!), elephant→dog (it only knows two words); the cell then prints the reveal: the whole secret is ONE question, «وزن ⁦≤ ۱۴⁩ کیلوگرم؟» | "The line is a guess from 8 examples. Near the line, the guess breaks. And the whole machine is one question — HOW it picked that question is Session 3's mystery." | Laughter at the elephant + "Why did it get the puppy wrong?!" |
 
 Closing line (memorize this): 
 > "One idea behind everything you just saw. You'll know it in 30 minutes, and you'll build your own before you leave today."
@@ -63,6 +65,7 @@ Closing line (memorize this):
   1. Project the fruit table (5 fruits × 3 features: color, size, texture).
   2. Play "guess the fruit": read features aloud, class shouts the label.
   3. Then flip it: "Which ONE feature is most useful? Which is useless?" — vote, discuss. This is their first taste of *feature importance*, planted 8 sessions before we name it.
+  4. **Chain the guesses into a decision map (slides 14–15):** the class lines its own questions up — "red? → apple · not red, long? → banana · else grapes" — first drawn on the board together, then shown as the tidy fruit decision map. This is the decision tree met INTUITIVELY, by hand, with zero code; the NAME is deliberately withheld until Session 2, and Segment E's callback ("your fruit map? the machine drew its own") turns `DecisionTreeClassifier` into "the machine's version of what we did by hand."
 - **Visual:** the fruit table colorized (slides), then the same table as a pandas DataFrame in cell A1 so students connect "pictures" and "data".
 - **Vocabulary (write on the board, keep for the whole course):**
   - **Feature** = a clue (a column)
@@ -82,8 +85,8 @@ Closing line (memorize this):
 ### Segment D — Titanic as pictures, not tables (30:00–40:00)
 - **One idea:** before any modeling, you *look* at data. Data has shape, color, and stories.
 - **Live coding** (students follow along in notebook cells A4–A6):
-  - A4: read the CSV, `df.head()` — "891 passengers, each a row, each row a life."
-  - A5: survival counts as a bar chart — "more died than survived; the model must fight this imbalance."
+  - A4: read the CSV, `df.head()` — "891 passengers in the raw file, each a row, each row a life"; the cell prints that only the 712 rows with complete info teach the model (10-second "real data has holes" beat).
+  - A5: survival counts as a bar chart — "more died than survived: 424 vs 288; the model must fight this imbalance."
   - A6: survival by `sex` and by `pclass` — the two punchline plots: "being a woman in 1st class ≈ survival ticket". 
 - **Narrate the history while plotting** — the Titanic story carries this segment; the plots are the evidence.
 - **Misconception to pre-empt:** "the model reads names/tickets." — it only sees the columns we give it. Whatever we don't give, does not exist for the model.
@@ -98,7 +101,7 @@ This is the emotional peak of the session. Slow down. Make students type with yo
   model.fit(X, y)                               # line 2: let it study
   model.predict(new_passengers)                 # line 3: ask it questions
   ```
-- Before running `fit`: class ceremony — "on the count of three, everyone say LEARN. ... That took less than a second. It studied 891 lives in less than a second."
+- Before running `fit`: class ceremony — "on the count of three, everyone say LEARN. ... That took less than a second. It studied 712 lives in less than a second."
 - Run predictions on a few invented passengers (rich woman 1st class vs poor man 3rd class) and show the tree picture (cell A9, `plot_tree`) — "this picture IS the rules it found. You could have drawn this yourself. It's just questions."
 - **Misconception to pre-empt:** the model is NOT a brain and does not "understand" Titanic, history, or death. It found question-patterns that match survival. Say it plainly; it increases trust rather than killing wonder.
 - **Check question:** "What are the 3 lines doing, in your own words?"

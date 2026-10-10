@@ -36,7 +36,7 @@ def grade(ns):
         if ans == EXPECTED["B2_elephant_room"]:
             results.append((True, 1, " PASS: Problem B2 (1/1) — the elephant gets the big-dog room. A leaf says one word for everything that reaches it."))
         else:
-            results.append((False, 0, f" FAIL: Problem B2: expected \"{EXPECTED['B2_elephant_room']}\", got \"{ans}\". Trace the path: 3000 >= 14 sends it right; 20 >= 8.25 sends it right again. Which room is that? (Copy the exact string from model.predict, don't type by hand.)"))
+            results.append((False, 0, f" FAIL: Problem B2: expected \"{EXPECTED['B2_elephant_room']}\", got \"{ans}\". Trace the path: the elephant answers only ONE question — 3000 > 14 sends it straight into a leaf. The ear question (8.25) is only asked on the LIGHT side. Which room did it land in? (Copy the exact string from model.predict, don't type by hand.)"))
 
     # ---- B3: The Smallest Perfect Depth (1 pt) ----
     if "B3_min_depth" not in ns:

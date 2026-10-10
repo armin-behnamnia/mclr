@@ -7,11 +7,11 @@
   big dark semi-bold titles, modest body size, side-by-side image/text,
   NO gradients, glows, grids, or card frames.
 
-  Palette: the sample's yellow family remapped to light blue:
-    bg     #FFF2DC  ->  #EDF4FB   (light bluish canvas)
-    accent #FDD198  ->  #A9CCE8   (soft blue highlight)
-    accent #FFA767  ->  #6FA8DC   (medium blue)
-    accent #F0C894  ->  #BFD7EE   (pale blue)
+  Palette: lively azure family (2026-10 refresh, still flat/no gradients):
+    bg     #EAF3FE   (airy bright azure canvas)
+    accent #2D7FF9   (vivid azure)
+    soft   #7DB6FF   (bright sky)
+    pale   #A9D0FF   (pale azure)
   Ink stays dark gray #3C4043. Font: Vazirmatn (per course decision).
 
   Keeps the mandatory overflow guard + image budgets (non-negotiable
@@ -36,20 +36,20 @@
   --font-main: "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
   --font-mono: "Cascadia Code", "Consolas", "Courier New", monospace;
 
-  --bg-canvas:    #edf4fb;   /* light bluish flat canvas (was cream) */
+  --bg-canvas:    #eaf3fe;   /* airy bright azure canvas */
   --bg-card:      #ffffff;
-  --bg-card-tint: #e2edf7;
+  --bg-card-tint: #dceafe;
 
   --ink:          #3c4043;   /* sample's dark gray ink */
   --ink-mid:      #5f6b73;
   --ink-dim:      #9099a1;
 
-  --accent:       #6fa8dc;   /* medium blue (was orange) */
-  --accent-soft:  #a9cce8;   /* soft blue highlight (was amber) */
-  --accent-pale:  #bfd7ee;   /* pale blue (was tan) */
-  --violet:       #3d7ab5;   /* links/emphasis stay in the blue family */
-  --pink:         #5b8fc6;
-  --amber:        #7fa8c9;
+  --accent:       #2d7ff9;   /* vivid azure (lively) */
+  --accent-soft:  #7db6ff;   /* bright sky highlight */
+  --accent-pale:  #a9d0ff;   /* pale azure */
+  --violet:       #1f6feb;   /* links/emphasis stay in the blue family */
+  --pink:         #54a0f0;
+  --amber:        #6fb2ff;
   --green:        #4a8f6c;
 }
 
@@ -137,6 +137,16 @@ ul li::marker { color: var(--accent); }
 ol li::marker { color: var(--violet); font-weight: 700; }
 li { margin: .28em 0; }
 
+/* ═══ LTR escape hatch — for English decks (teach guides, slides_en tables).
+   Use `class: ltr` in the deck front matter, or `<!-- _class: ltr -->` per slide.
+   Composes with mood classes: `<!-- _class: ltr lead -->`. ═══ */
+
+section.ltr { direction: ltr; text-align: left; }
+section.ltr table { direction: ltr; }
+section.ltr ul, section.ltr ol { direction: ltr; text-align: left; padding-right: 0; padding-left: 1.1em; }
+section.ltr h1, section.ltr h2, section.ltr h3, section.ltr h4,
+section.ltr p { text-align: left; }
+
 /* ═════════════════ CODE — flat light box, stays LTR ═════════════════ */
 
 section pre, section code {
@@ -156,19 +166,21 @@ code {
 }
 
 pre {
-  background: var(--bg-card);
-  border: 1.5px solid var(--accent-pale);
-  border-radius: 10px;
-  padding: 24px 28px;
+  background: #F4F8FF;
+  border: 1.5px solid #B9D3F7;
+  border-left: 6px solid var(--accent);
+  border-radius: 12px;
+  padding: 26px 30px 22px;
   position: relative;
-  font-size: .78em;
-  line-height: 1.55;
+  font-size: .82em;
+  line-height: 1.7;
+  box-shadow: 0 3px 14px rgba(31, 111, 235, .10);
 }
 
 pre::before {
   content: "● ● ●";
   position: absolute;
-  top: 9px; left: 14px;
+  top: 10px; left: 16px;
   font-size: 11px;
   letter-spacing: 4px;
   color: var(--accent);
@@ -177,20 +189,53 @@ pre::before {
 pre::after {
   content: "~/ml-course";
   position: absolute;
-  top: 9px; right: 14px;
+  top: 10px; right: 16px;
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--ink-dim);
   direction: ltr;
 }
 
-pre code { background: none; border: none; padding: 0; color: #2c3e50; }
+pre code { background: none; border: none; padding: 0; color: #1A3A66; font-weight: 600; }
+
+/* ── syntax colors (marp applies highlight.js classes to fenced code with a language) ── */
+pre code .hljs-keyword,
+pre code .hljs-selector-tag,
+pre code .hljs-literal        { color: #7C3AED; font-weight: 700; }
+pre code .hljs-string,
+pre code .hljs-regexp         { color: #2E7D32; }
+pre code .hljs-number,
+pre code .hljs-symbol         { color: #C2410C; }
+pre code .hljs-built_in,
+pre code .hljs-title,
+pre code .hljs-title.function_,
+pre code .hljs-name           { color: #1F6FEB; }
+pre code .hljs-title.class_   { color: #0E7490; font-weight: 700; }
+pre code .hljs-comment,
+pre code .hljs-quote          { color: #6B7A90; font-weight: 400; font-style: italic; }
+pre code .hljs-params         { color: #3C4043; font-weight: 400; }
+pre code .hljs-attr,
+pre code .hljs-attribute,
+pre code .hljs-variable       { color: #0E7490; }
+
+/* code on drama slides must stay readable */
+section.dark pre {
+  background: rgba(255, 255, 255, .10);
+  border-color: rgba(156, 192, 255, .5);
+  border-left-color: #9CC0FF;
+  box-shadow: none;
+}
+section.dark pre code            { color: #EAF2FF; }
+section.dark pre code .hljs-keyword { color: #C4B5FD; }
+section.dark pre code .hljs-string  { color: #A7F3D0; }
+section.dark pre code .hljs-number  { color: #FDBA74; }
+section.dark pre code .hljs-comment { color: rgba(255,255,255,.65); }
+section.dark pre::after          { color: rgba(255,255,255,.55); }
 
 /* ═════════════════ TABLES — flat, thin rules (sample style) ═════════════════ */
 
 table {
-  direction: rtl;
-  border-collapse: separate;
+  direction: rtl;  border-collapse: separate;
   border-spacing: 0;
   margin: .6em auto;
   font-size: .9em;
@@ -263,17 +308,17 @@ section.lead h2::after { margin-right: auto; margin-left: auto; }
 section.lead p { text-align: center; font-size: 1.05em; color: var(--ink-mid); }
 
 /* --- HOOK: demo slides (pale blue canvas) --- */
-section.hook { background-color: #e4eef9; }
-section.hook h1 { color: #2b6cb0; font-size: 1.5em; }
+section.hook { background-color: #ddeeff; }
+section.hook h1 { color: #1f6feb; font-size: 1.5em; }
 
 /* --- WOW: wow-moments (pale blue, blue title) --- */
-section.wow { background-color: #dcebf8; }
-section.wow h1 { color: #2b6cb0; font-size: 1.5em; }
+section.wow { background-color: #d2e6ff; }
+section.wow h1 { color: #1f6feb; font-size: 1.5em; }
 
 /* --- FOCUS: serious/quiet beats (slightly deeper blue-gray) --- */
-section.dark, section.focus { background-color: #e3e9f0; }
-section.dark h1, section.focus h1 { color: #34495e; }
-section.dark strong, section.focus strong { color: #2b6cb0; }
+section.dark, section.focus { background-color: #dce9fb; }
+section.dark h1, section.focus h1 { color: #1a3a66; }
+section.dark strong, section.focus strong { color: #1f6feb; }
 
 /* --- DEFINITION: flat green stripe card --- */
 section.definition { background-color: #e9f2ec; }
@@ -282,15 +327,15 @@ section.definition h2::after { background: var(--green); }
 section.definition strong { color: var(--green); }
 
 /* --- QUIZ: dashed frame on flat canvas --- */
-section.quiz { background-color: #eaf0f6; }
-section.quiz h2 { color: #4a7fa8; }
-section.quiz h2::after { background: #4a7fa8; }
-section.quiz strong { color: #4a7fa8; }
+section.quiz { background-color: #e3efff; }
+section.quiz h2 { color: #1f6feb; }
+section.quiz h2::after { background: #1f6feb; }
+section.quiz strong { color: #1f6feb; }
 
 /* --- HANDOUT: at-home problems (blue stripe) --- */
-section.handout { background-color: #e8eef7; }
-section.handout h2 { color: #3d7ab5; }
-section.handout h2::after { background: #3d7ab5; }
+section.handout { background-color: #e0ebfd; }
+section.handout h2 { color: #1f6feb; }
+section.handout h2::after { background: #1f6feb; }
 
 /* --- CODE SPOTLIGHT --- */
 section.codespot { justify-content: center; }

@@ -22,17 +22,18 @@ SRC = os.path.join(HERE, "slides.md")
 OUT = os.path.join(HERE, "slides.pptx")
 FONT_FILE = os.path.join(HERE, "Vazirmatn.ttf")
 
-# ---- theme constants (must match slide-theme/mlcourse-blue-fa.css — "Editorial Blue") ----
+# ---- theme constants (must match slide-theme/mlcourse-blue-fa.css — "Editorial Blue",
+# 2026-10 azure refresh: vivid azure accent on airy bright-azure canvas) ----
 FONT = "Vazirmatn"
 TITLE_COLOR = RGBColor(0x3C, 0x40, 0x43)   # dark gray flat titles
-TEXT_COLOR = RGBColor(0x3C, 0x40, 0x43)    # sample's dark gray ink
-ACCENT = RGBColor(0x6F, 0xA8, 0xDC)        # medium blue
-BG_TOP = RGBColor(0xED, 0xF4, 0xFB)        # light bluish canvas
-BG_BOTTOM = RGBColor(0xED, 0xF4, 0xFB)     # flat — same solid color
-WOW_TITLE = RGBColor(0x2B, 0x6C, 0xB0)     # blue for wow slides
-FOCUS_TITLE = RGBColor(0x34, 0x49, 0x5E)   # blue-gray for focus slides
-HOOK_TITLE = RGBColor(0x2B, 0x6C, 0xB0)    # blue for hook slides
-LEAD_BG = RGBColor(0xA9, 0xCC, 0xE8)       # soft blue lead background
+TEXT_COLOR = RGBColor(0x3C, 0x40, 0x43)    # dark gray ink
+ACCENT = RGBColor(0x2D, 0x7F, 0xF9)        # vivid azure
+BG_TOP = RGBColor(0xEA, 0xF3, 0xFE)        # airy bright azure canvas
+BG_BOTTOM = RGBColor(0xEA, 0xF3, 0xFE)     # flat — same solid color
+WOW_TITLE = RGBColor(0x1F, 0x6F, 0xEB)     # azure for wow slides
+FOCUS_TITLE = RGBColor(0x1A, 0x3A, 0x66)   # deep blue for focus slides
+HOOK_TITLE = RGBColor(0x1F, 0x6F, 0xEB)    # azure for hook slides
+LEAD_BG = RGBColor(0x7D, 0xB6, 0xFF)       # bright sky lead background
 
 SLIDE_W, SLIDE_H = Inches(13.333), Inches(7.5)
 
@@ -134,9 +135,9 @@ def add_gradient_bg(slide, dark=False, wow=False, lead=False):
     if lead:
         fill.fore_color.rgb = LEAD_BG          # soft blue lead canvas
     elif dark:
-        fill.fore_color.rgb = RGBColor(0xE3, 0xE9, 0xF0)  # focus blue-gray
+        fill.fore_color.rgb = RGBColor(0xDC, 0xE9, 0xFB)  # focus blue (theme .dark/.focus)
     elif wow:
-        fill.fore_color.rgb = RGBColor(0xDC, 0xEB, 0xF8)  # wow pale blue
+        fill.fore_color.rgb = RGBColor(0xD2, 0xE6, 0xFF)  # wow pale azure (theme .wow)
     else:
         fill.fore_color.rgb = BG_TOP
 

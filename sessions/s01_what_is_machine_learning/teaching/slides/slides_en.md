@@ -28,7 +28,7 @@ TIMING: hook 0-5, big question 5-10, fruit game 10-20, supervised 20-30, Titanic
 
 # The AI Special
 
-# One demo. One line. One question.
+# One demo. One red line. One question.
 
 *Watch closely.*
 
@@ -50,7 +50,7 @@ Each animal = two numbers (weight, ear length) + one answer
 *No rules were given to it. None.*
 
 <!--
-[RUN: PART 0 demo cell, stage 1] Show the 8-row table — this is ALL the machine sees.
+[RUN: PART 0 demo cell — مرحلهٔ ۱, the «جدول» marker] The 8-row table is ALL the machine sees.
 SAY: "8 animals. Two numbers each, plus the answer. Nobody wrote a single rule."
 EXPECT: "so what? it's just a table" — perfect, let them underestimate it.
 -->
@@ -69,9 +69,10 @@ Behind the line: cats. In front: dogs.
 ![art](../../assets/animal_game.png)
 
 <!--
-[RUN: PART 0 demo cell, stage 3 — the scatter plot] The machine draws its own red dashed line.
-SAY: "No human drew this line. The machine found it in those 8 rows."
-EXPECT: "where did the line come from?!" — do NOT explain yet. Slide 9 answers it.
+[RUN: PART 0 demo cell — مرحلهٔ ۳, the «خطِ ماشین» marker] The scatter: the machine's own red dashed line.
+(مرحلهٔ ۲ was the silent .fit() — one invisible line of code.)
+SAY: "No human drew this line. The machine found it hiding in those 8 rows."
+EXPECT: "where did the line come from?!" — do NOT explain yet.
 -->
 
 ---
@@ -85,19 +86,20 @@ Wolf ← dog. Neighbor's cat ← cat. **Correct!**
 
 Puppy ← cat?! Elephant ← dog?!
 
-*One simple question fills the gaps in the line.*
+**Its whole secret: one question — "weight ≤ 14 kg?"**
 
 <!--
-[RUN: PART 0 demo cell, stage 4] Wolf right, neighbor cat right... PUPPY = cat (WRONG! it's a 2kg dog). ELEPHANT = dog (it only knows two words — laugh).
-THE MONEY MOMENT: "The line is a GUESS from 8 examples. Near the line, the guess breaks. More examples = better line — that's Session 2."
-CLOSING: "One idea behind all of this. You'll build your own before you leave today."
+[RUN: PART 0 demo cell — مرحلهٔ ۴, the «امتحان» marker] Verdicts on unseen animals.
+Let the puppy/elephant errors land as LAUGHS, then the cell prints the reveal: one question, weight ≤ 14 kg.
+SAY: "It learned ONE question from 8 rows — and it still gets the puppy wrong. Learning is a guess."
+SEED: "How does the machine pick that ONE question? Session 3 answers it — but first, Session 2."
 -->
 
 ---
 
 # The Big Question
 
-## How do we make computers smart?
+How do we make computers smart?
 
 <!--
 [5:00] Segment A: rules vs learning. DRAW both boxes on the board — they stay ALL session.
@@ -149,9 +151,8 @@ Concede: "This is why we don't write rules. We show examples."
 **That red line at the start? This.**
 
 <!--
-THE REVEAL — point back at the hook: those 8 animals WERE the examples with answers; the red line WAS the rule it discovered. The mystery is solved.
--->
-Board box 2 under box 1: data + answers = RULES. Point silently — let it land.
+Board box 2 under box 1: data + answers = RULES — point silently, let it land.
+REVEAL: the 8 animals WERE the examples; the red line WAS the rule.
 CHECK (cold call): "What does the machine get and produce?" — examples with answers = rules.
 Point back to these boxes at least 5 times today.
 -->
@@ -202,7 +203,7 @@ Next: which clue is most useful — vote.
 
 <!--
 WRITE on board (never erased): feature, label, example.
-Hooks: feature = fingerprint; label = the answer; example = one solved exercise.
+Hooks (from the analogy map, nothing ad-hoc): feature = a clue; label = the answer; example = one solved exercise.
 [MISCONCEPTION] the label is hidden at quiz time, not read by the model.
 CHECK: "3 Titanic features + the label?"
 -->
@@ -225,17 +226,53 @@ RUN cell A2 — students record their guess (revisited in Session 9).
 
 ---
 
+# Questions in a Chain
+
+Line your guesses up into a chain:
+
+ask color first, then size.
+
+*A decision map — by hand, no code anywhere.*
+
+<!--
+EXPERIENCE before code: the class chains its own guesses.
+DRAW with them: "red? apple. not red, long? banana. else grapes."
+The decision tree arrives INTUITIVELY. The NAME is withheld until Session 2.
+-->
+
+---
+<!-- _class: wow -->
+
+# The Fruit Decision Map
+
+![fruit decision map](../../assets/fruit_tree.png)
+
+Your own guesses — just tidied up.
+
+<!--
+SHOW the fruit decision map. TRACE one fruit together: purple, small, wrinkly -> grapes.
+[HONESTY BEAT — do it!] The map MISJUDGES 2 of the 6 fruits in A1's own table:
+the green medium apple (map says grapes) and the yellow medium banana (map says grapes).
+Trace the green apple on purpose, hit the wrong room, and SAY: "Our hand-drawn rules
+already fail on 2 fruits out of 6 — now imagine 8 million pictures. THIS is why
+the machine learns the map FROM the data instead." (This seed becomes Session 2's hook.)
+SAY: "A human drew this. Next session: the MACHINE draws its own map — by itself."
+DO NOT say "decision tree" yet.
+-->
+
+---
+
 # Supervised Learning 
 
 Learning from examples **that include the answers**.
 
-Like studying with the answer key —
-then facing a **new exam**.
+![study with answer key, exam with hidden answers](../../assets/supervised_study_exam.png)
 
 <!--
 [20:00] Segment C. LIVE MINI-GAME: 4 solved fruit examples, then a 5th with hidden label — class predicts.
+The picture IS the concept: RIGHT table = study with the answer key, LEFT = the new exam, answers hidden (RTL reading order).
 SAY: "You just did supervised learning. Personally."
-RUN cell A3: study table vs quiz table.
+RUN cell A3: study table vs quiz table — the code version of exactly this picture.
 -->
 
 ---
@@ -268,7 +305,8 @@ Every row is a life. Every column is a clue.
 <!--
 [30:00] Segment D: Titanic as pictures. Students follow cells A4-A6.
 NARRATE THE HISTORY while plotting — the story is the engine.
-A4: 891 passengers, each row a life.
+A4: 891 passengers in the raw file; the cell prints that only the 712 rows with
+COMPLETE info teach the model. 10-second beat: "real data has holes — we keep the complete rows."
 -->
 
 ---
@@ -280,32 +318,34 @@ A4: 891 passengers, each row a life.
 *Always look at your data before doing anything with it.*
 
 <!--
-[RUN cell A5] More died than survived — 549 vs 342.
+[RUN cell A5] More died than survived — 424 vs 288 of the 712 complete rows.
 RULE (course-wide): every dataset gets PLOTTED before MODELED.
 -->
 
 ---
-<!-- _class: wow --> hook
+<!-- _class: wow -->
 
 # Survival by Sex & Class 
 
 ![survival by sex and class](../../assets/survival_by_sex_class.png)
 
-**~74% of women lived. ~19% of 3rd-class men did.**
+**~75% of women lived. Only ~20% of men did.**
 
 <!--
 [RUN cell A6] THE PUNCHLINE PLOTS. Let students read the bars first.
-ASK: "Which feature matters for survival?" — sex, then class.
+ASK: "Which feature matters for survival?" — gender, then class.
 SAY: "A rich woman in 1912 had close to a survival ticket."
 -->
 
 ---
 
+<!-- _class: hook -->
+
 # THE MOMENT
 
-![art](../../assets/magic_lines.png)
+Train an AI in 3 lines
 
-# Train an AI in 3 Lines
+![art](../../assets/magic_lines.png)
 
 *Type with me. Really — open the notebook and type.*
 
@@ -321,7 +361,7 @@ CEREMONY before fit(): "On three, everyone say LEARN."
 # The 3 Magic Lines 
 
 ```python
-model = DecisionTreeClassifier(max_depth=3) # 1. pick a student
+model = DecisionTreeClassifier(max_depth=3) # 1. pick a student ← this IS the model
 model.fit(X, y) # 2. let it study
 model.predict(new_passengers) # 3. ask it questions
 ```
@@ -346,8 +386,8 @@ SAY: "Every model you'll ever meet follows these three lines."
 
 <!--
 [RUN cell A9] Predict for a volunteer: "Would Sara, 2nd class, age 13, survive?"
-Then the tree picture: "Just yes/no questions. You could draw this.
-Who chose the questions? The machine did."
+Tree picture: "Your fruit map from 15 minutes ago? Same shape — the machine drew its own."
+Who chose the questions? The machine did — cliffhanger for Session 2.
 -->
 
 ---
@@ -363,7 +403,7 @@ It found question-patterns matching survival.
 
 <!--
 Slow, quiet, honest moment.
-SAY: "A mirror of 714 examples. Good data, good mirror. Unfair data, unfair mirror."
+SAY: "A mirror of 712 examples. Good data, good mirror. Unfair data, unfair mirror."
 Then snap energy back up for the quiz.
 -->
 
@@ -406,15 +446,15 @@ Judge: python judge/run.py s01_notebook.ipynb
 
 1. **B1** The Feature Detective
 2. **B2** Build Your Own Dataset
-3. **B3** The 3 Magic Lines — train YOUR classifier
-4. **B4** The Survival Predictor — a boy from 1912 awaits your verdict
+3. **B3** The 3 Magic Lines on YOUR animals
+4. **B4** The Survival Predictor
 
-**Due: before our problem-solving session.**
+`python judge/run.py s01_notebook.ipynb` ← instant score, anytime
 
 <!--
 One sentence of story per problem:
 B1 dumb features under scrutiny; B2 invent your own dataset; B3 magic lines on YOUR data; B4 the 12-year-old boy verdict.
-Deadline: before the problem-solving session.
+Deadline: before the problem-solving session. ~20-30 min total. First judge run is all-red — that's normal.
 -->
 
 ---
@@ -428,7 +468,7 @@ Deadline: before the problem-solving session.
 
 **Bring your attempts. Bring your bugs.**
 
-*They are the fuel of the next session.* 
+*They are the fuel of the next session.*
 
 ![rocket](shared_closing.png)
 

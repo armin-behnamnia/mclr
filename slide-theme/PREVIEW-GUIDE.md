@@ -129,7 +129,7 @@ edit `slides.md` and re-render; that keeps all four outputs in sync.
    presenter notes are English.
 3. No emojis anywhere (Golden Rule 0 in `session-creation-guide.md`).
 4. Keep slides visual-first (~20 words max); images carry the content.
-5. The theme (`slide-theme/mlcourse-fa.css`) is shared by all 32 sessions —
+5. The theme (`slide-theme/mlcourse-blue-fa.css`) is shared by all 32 sessions —
    never add per-session fonts, colors, or inline styles.
 6. Deck budget: the final PDF stays under ~8 MB; downscale images if needed.
 

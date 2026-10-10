@@ -28,7 +28,7 @@ TIMING: hook 0-5, big question 5-10, fruit game 10-20, supervised 20-30, Titanic
 
 # نمایش ویژهٔ هوش مصنوعی
 
-# یک دمو. یک خط. یک سؤال.
+# یک دمو. یک خطِ قرمز. یک سؤال.
 
 *خوب نگاه کن.*
 
@@ -50,7 +50,7 @@ FALLBACK: narrate from notes, never skip the hook.
 *هیچ قانونی به آن داده نشده. هیچ.*
 
 <!--
-[RUN: PART 0 demo cell, stage 1] Show the 8-row table — this is ALL the machine sees.
+[RUN: PART 0 demo cell — مرحلهٔ ۱, the «جدول» marker] The 8-row table is ALL the machine sees.
 SAY: "8 animals. Two numbers each, plus the answer. Nobody wrote a single rule."
 EXPECT: "so what? it's just a table" — perfect, let them underestimate it.
 -->
@@ -69,9 +69,10 @@ EXPECT: "so what? it's just a table" — perfect, let them underestimate it.
 ![art](../../assets/animal_game.png)
 
 <!--
-[RUN: PART 0 demo cell, stage 3 — the scatter plot] The machine draws its own red dashed line.
-SAY: "No human drew this line. The machine found it in those 8 rows."
-EXPECT: "where did the line come from?!" — do NOT explain yet. Slide 9 answers it.
+[RUN: PART 0 demo cell — مرحلهٔ ۳, the «خطِ ماشین» marker] The scatter: the machine's own red dashed line.
+(مرحلهٔ ۲ was the silent .fit() — one invisible line of code.)
+SAY: "No human drew this line. The machine found it hiding in those 8 rows."
+EXPECT: "where did the line come from?!" — do NOT explain yet.
 -->
 
 ---
@@ -85,12 +86,13 @@ EXPECT: "where did the line come from?!" — do NOT explain yet. Slide 9 answers
 
 توله‌سگ ← گربه؟! فیل ← سگ؟!
 
-*یک سؤال ساده، جاهای خالیِ خط را پر می‌کند.*
+**کل رازش فقط یک سؤال بود: «وزن ⁦≤ ۱۴⁩ کیلوگرم؟»**
 
 <!--
-[RUN: PART 0 demo cell, stage 4] Wolf right, neighbor cat right... PUPPY = cat (WRONG! it's a 2kg dog). ELEPHANT = dog (it only knows two words — laugh).
-THE MONEY MOMENT: "The line is a GUESS from 8 examples. Near the line, the guess breaks. More examples = better line — that's Session 2."
-CLOSING: "One idea behind all of this. You'll build your own before you leave today."
+[RUN: PART 0 demo cell — مرحلهٔ ۴, the «امتحان با حیوانات ندیده» marker] Verdicts on unseen animals.
+Let the puppy/elephant errors land as LAUGHS, then the cell prints the reveal: one question, weight ≤ 14 kg.
+SAY: "It learned ONE question from 8 rows — and it still gets the puppy wrong. Learning is a guess."
+SEED: "How does the machine pick that ONE question? Session 3 answers it — but first, Session 2."
 -->
 
 ---
@@ -106,7 +108,7 @@ Next slide's interaction is the core; don't lecture through it.
 
 ---
 
-راه اول — روش قدیمی: نوشتن قاعده‌ها
+# راه اول — روش قدیمی: نوشتن قاعده‌ها
 
 `داده + قاعده‌ها ← پاسخ`
 
@@ -149,10 +151,10 @@ Concede: "This is why we don't write rules. We show examples."
 **همان خطِ قرمزِ اولِ جلسه.**
 
 <!--
-THE REVEAL — point back at the hook: those 8 animals WERE the examples with answers; the red line WAS the rule it discovered. The mystery is solved.
-Board box 2 under box 1: data + answers = RULES.
-CHECK (cold call): "What does the machine get and produce?" — examples with answers = rules.
-Point back to the red line at least 5 times today.
+Board box 2 under box 1: data + answers = RULES — point silently.
+REVEAL: the 8 animals WERE the examples; the red line WAS the rule.
+CHECK: "What does the machine get, what does it produce?"
+Return to the red line 5+ times today.
 -->
 
 ---
@@ -161,9 +163,9 @@ Point back to the red line at least 5 times today.
 
 # هوش مصنوعی در برابر یادگیری ماشین
 
-**هوش مصنوعی** یعنی آرزوی بزرگ: ماشین‌هایی که هوشمندانه رفتار می‌کنند
+**هوش مصنوعی (AI)** = آرزوی بزرگ: ماشینِ هوشمند
 
-**یادگیری ماشین** یعنی راه اصلی رسیدن به آن آرزو: یادگیری از روی داده‌ها
+**یادگیری ماشین (ML)** = راهِ رسیدن به آن آرزو: یادگیری از داده
 
 <!--
 [~7:00] 60 seconds max. [MISCONCEPTION] AI and ML are NOT synonyms.
@@ -193,15 +195,15 @@ Next: which clue is most useful — vote.
 
 # واژگان جدید 
 
-**ویژگی** = یک سرنخ *(یک ستون)*
+**ویژگی (Feature)** = سرنخ *(یک ستون)*
 
-**برچسب** = پاسخ *(ستونی که می‌خواهیم پیش‌بینی کنیم)*
+**برچسب (Label)** = پاسخ *(ستونی که پیش‌بینی می‌کنیم)*
 
-**نمونه** = یک سطر = سرنخ‌ها + پاسخ
+**نمونه (Example)** = یک سطر = سرنخ‌ها + پاسخ
 
 <!--
 WRITE on board (never erased): feature, label, example.
-Hooks: feature = fingerprint; label = the answer; example = one solved exercise.
+Hooks (from the analogy map, nothing ad-hoc): feature = a clue; label = the answer; example = one solved exercise.
 [MISCONCEPTION] the label is hidden at quiz time, not read by the model.
 CHECK: "3 Titanic features + the label?"
 -->
@@ -224,17 +226,53 @@ RUN cell A2 — students record their guess (revisited in Session 9).
 
 ---
 
-# یادگیری نظارت‌شده 
+# سؤال‌های پشتِ سرِ هم
+
+حدس‌هایتان را به یک زنجیره بگذارید:
+
+اول رنگ را بپرس، بعد اندازه را.
+
+*یک نقشهٔ تصمیم — با دست، بدون هیچ کدی.*
+
+<!--
+EXPERIENCE before code: the class chains its own guesses.
+DRAW with them: "red? apple. not red, long? banana. else grapes."
+The decision tree arrives INTUITIVELY. The NAME is withheld until Session 2.
+-->
+
+---
+<!-- _class: wow -->
+
+# نقشهٔ تصمیمِ میوه
+
+![نقشهٔ تصمیم میوه](../../assets/fruit_tree.png)
+
+همان حدس‌های خودتان — فقط مرتب شده.
+
+<!--
+SHOW the fruit decision map. TRACE one fruit together: purple, small, wrinkly -> grapes.
+[HONESTY BEAT — do it!] The map MISJUDGES 2 of the 6 fruits in A1's own table:
+the green medium apple (map says grapes) and the yellow medium banana (map says grapes).
+Trace the green apple on purpose, hit the wrong room, and SAY: "Our hand-drawn rules
+already fail on 2 fruits out of 6 — now imagine 8 million pictures. THIS is why
+the machine learns the map FROM the data instead." (This seed becomes Session 2's hook.)
+SAY: "A human drew this. Next session: the MACHINE draws its own map — by itself."
+DO NOT say "decision tree" yet.
+-->
+
+---
+
+# یادگیری نظارت‌شده (Supervised Learning)
 
 یادگیری از نمونه‌هایی **که پاسخ دارند.**
 
-مثل درس خواندن با پاسخ‌نامه —
-بعد رفتن سر **آزمون جدید.**
+![درس با پاسخ‌نامه، آزمون با پاسخ پنهان](../../assets/supervised_study_exam.png)
 
 <!--
 [20:00] Segment C. LIVE MINI-GAME: 4 solved fruit examples, then a 5th with hidden label — class predicts.
+The picture IS the concept: LEFT table = study with the answer key, RIGHT table = the new exam, answers hidden.
 SAY: "You just did supervised learning. Personally."
-RUN cell A3: study table vs quiz table.
+RUN cell A3: study table vs quiz table — the code version of exactly this picture.
 -->
 
 ---
@@ -267,7 +305,8 @@ Use the laugh, then CHECK: "Why 'supervised'?" — examples come with answers.
 <!--
 [30:00] Segment D: Titanic as pictures. Students follow cells A4-A6.
 NARRATE THE HISTORY while plotting — the story is the engine.
-A4: 891 passengers, each row a life.
+A4: 891 passengers in the raw file; the cell prints that only the 712 rows with
+COMPLETE info teach the model. 10-second beat: "real data has holes — we keep the complete rows."
 -->
 
 ---
@@ -279,7 +318,7 @@ A4: 891 passengers, each row a life.
 *همیشه قبل از هر کاری، داده‌ات را ببین.*
 
 <!--
-[RUN cell A5] More died than survived — 549 vs 342.
+[RUN cell A5] More died than survived — 424 vs 288 of the 712 complete rows.
 RULE (course-wide): every dataset gets PLOTTED before MODELED.
 -->
 
@@ -290,11 +329,11 @@ RULE (course-wide): every dataset gets PLOTTED before MODELED.
 
 ![بقا بر حسب جنسیت و کلاس](../../assets/survival_by_sex_class.png)
 
-حدود ۷۴٪ زنان زنده ماندند؛ اما فقط ۱۹٪ از مردان کلاس ۳.
+حدود ۷۵٪ زنان زنده ماندند؛ اما فقط ۲۰٪ از مردان.
 
 <!--
 [RUN cell A6] THE PUNCHLINE PLOTS. Let students read the bars first.
-ASK: "Which feature matters for survival?" — sex, then class.
+ASK: "Which feature matters for survival?" — gender, then class.
 SAY: "A rich woman in 1912 had close to a survival ticket."
 -->
 
@@ -321,7 +360,7 @@ CEREMONY before fit(): "On three, everyone say LEARN."
 # سه خط جادویی 
 
 ```python
-model = DecisionTreeClassifier(max_depth=3) # ۱. انتخاب دانش‌آموز
+model = DecisionTreeClassifier(max_depth=3) # ۱. انتخاب دانش‌آموز ← این «مدل» (Model) است
 model.fit(X, y) # ۲. درس خواندن
 model.predict(new_passengers) # ۳. سؤال پرسیدن
 ```
@@ -338,7 +377,7 @@ SAY: "Every model you'll ever meet follows these three lines."
 
 ---
 
-چه چیزی یاد گرفت؟
+# چه چیزی یاد گرفت؟
 
 ![درخت تصمیم](../../assets/decision_tree.png)
 
@@ -346,14 +385,14 @@ SAY: "Every model you'll ever meet follows these three lines."
 
 <!--
 [RUN cell A9] Predict for a volunteer: "Would Sara, 2nd class, age 13, survive?"
-Then the tree picture: "Just yes/no questions. You could draw this.
-Who chose the questions? The machine did."
+Tree picture: "Your fruit map from 15 minutes ago? Same shape — the machine drew its own."
+Who chose the questions? The machine did — cliffhanger for Session 2.
 -->
 
 ---
 <!-- _class: dark -->
 
-یک حرف آخر
+# یک حرف آخر
 
 این مدل یک **مغز نیست.**
 
@@ -363,7 +402,7 @@ Who chose the questions? The machine did."
 
 <!--
 Slow, quiet, honest moment.
-SAY: "A mirror of 714 examples. Good data, good mirror. Unfair data, unfair mirror."
+SAY: "A mirror of 712 examples. Good data, good mirror. Unfair data, unfair mirror."
 Then snap energy back up for the quiz.
 -->
 
@@ -406,15 +445,15 @@ Judge: python judge/run.py s01_notebook.ipynb
 
 1. **B1** کارآگاه ویژگی‌ها
 2. **B2** دیتاست خودت را بساز
-3. **B3** سه خط جادویی — طبقه‌بند حیوانات خودت
+3. **B3** سه خط جادویی روی حیوانات خودت
 4. **B4** پیش‌بینی‌گر بقا
 
-مهلت: قبل از جلسهٔ بعدی (حل مسئله).
+`python judge/run.py s01_notebook.ipynb` ← نمرهٔ فوری، هر وقت خواستی
 
 <!--
 One sentence of story per problem:
 B1 dumb features under scrutiny; B2 invent your own dataset; B3 magic lines on YOUR data; B4 the 12-year-old boy verdict.
-Deadline: before the problem-solving session.
+Deadline: before the problem-solving session. ~20-30 min total. First judge run is all-red — that's normal.
 -->
 
 ---
@@ -424,11 +463,9 @@ Deadline: before the problem-solving session.
 
 # جلسهٔ بعد
 
-تمرین‌هایتان را همان‌جا، با هم حل می‌کنیم.
+تمرین‌هایت را همان‌جا، با هم حل می‌کنیم.
 
-هر کاری که امتحان کردید را بیاورید؛ حتی کدهای خراب را.
-
-آن‌ها سوخت جلسهٔ بعدی ما هستند. 
+حتی کدهای خراب را بیاور — آن‌ها سوختِ جلسهٔ بعدی است.
 
 ![rocket](shared_closing.png)
 

@@ -10,7 +10,7 @@
 - **Goal (student language):** "By the end of today, YOU will be able to train a working ML model and show it to your family."
 - **Before class — verify all of this:**
   - notebook `s01_notebook.ipynb` runs top-to-bottom (Colab or Jupyter)
-  - PART 0 demo cells 1–3 work (the whole hook depends on them)
+  - the single PART 0 demo cell works (the whole hook depends on it; it prints «مرحلهٔ ۱/۳/۴» markers)
   - slide assets exist in `assets/`
   - the judge passes on the solution notebook
 - **Session timing map:** hook 0–5 · big question 5–10 · fruit game 10–20 · supervised 20–30 · Titanic 30–40 · magic lines 40–50 · quiz 50–55 · handout 55–60.
@@ -32,11 +32,11 @@ The first minute sets the tone for the whole course. Welcome them like a show is
 
 ## Slide 2 — نمایش ویژهٔ هوش مصنوعی (hook)
 
-[0:00–5:00] THE HOOK. One demo, three beats: the table → the line → the quiz. Run the single PART 0 demo cell from the notebook, with maximum showmanship. Dim the lights if possible.
+[0:00–5:00] THE HOOK. One demo cell, four beats — the cell prints a «——— مرحلهٔ N · … ———» marker before each beat: **1** the table → **2** the silent fit (one line of code, nothing prints — SAY "watch: it just studied") → **3** the line → **4** the unseen-animals exam. Run the single PART 0 demo cell from the notebook, with maximum showmanship. Dim the lights if possible.
 
 **Say:** "By the end of today, you will build what you are about to see."
 
-**How to run:** open the notebook, PART 0, run the demo cell once. The output carries the whole story: 8-row table → scatter plot with the red dashed line → verdicts on 4 unseen animals. Narrate between beats in under 15 seconds.
+**How to run:** open the notebook, PART 0, run the demo cell once. The output carries the whole story: 8-row table → scatter plot with the red dashed line → verdicts on 4 unseen animals → the printed reveal: «کل رازِ ماشین فقط یک سؤال بود: وزن ⁦≤ ۱۴⁩ کیلوگرم؟». Narrate between beats in under 15 seconds.
 
 **Fallback if environment fails:** narrate from the demo description while showing slides 3–5; if the cell errors, re-run once, then move on. NEVER skip the hook — it is the fuel for the whole session.
 
@@ -44,7 +44,7 @@ The first minute sets the tone for the whole course. Welcome them like a show is
 
 ## Slide 3 — بازیِ حیوانات: جدول (hook)
 
-**[RUN: PART 0 demo cell, beat 1]** — the machine's entire world: 8 animals, each with two numbers (weight, ear length) and a label (cat/dog).
+**[RUN: PART 0 demo cell, beat «مرحلهٔ ۱»]** — the machine's entire world: 8 animals, each with two numbers (weight, ear length) and a label (cat/dog).
 
 **Say:** "This table is ALL the machine gets. Eight rows. Nobody wrote a single rule."
 
@@ -54,7 +54,7 @@ The first minute sets the tone for the whole course. Welcome them like a show is
 
 ## Slide 4 — بازیِ حیوانات: خطِ ماشین (hook)
 
-**[RUN: PART 0 demo cell, beat 3 — the scatter plot]** — from those 8 rows, the machine drew a red dashed line: cats behind it, dogs in front.
+**[RUN: PART 0 demo cell, beat «مرحلهٔ ۳» — the scatter plot]** — from those 8 rows, the machine drew a red dashed line: cats behind it, dogs in front. (Beat «مرحلهٔ ۲» was the silent `.fit()` — one invisible line of code.)
 
 **Say:** "No human drew this line. The machine found it hiding in those 8 rows."
 
@@ -66,10 +66,13 @@ The first minute sets the tone for the whole course. Welcome them like a show is
 
 ## Slide 5 — بازیِ حیوانات: امتحان (hook)
 
-**[RUN: PART 0 demo cell, beat 4]** — verdicts on animals the machine has NEVER seen:
+**[RUN: PART 0 demo cell, beat «مرحلهٔ ۴»]** — verdicts on animals the machine has NEVER seen:
 - گرگ (35 kg) → سگ. Correct.
 - گربهٔ همسایه (7 kg) → گربه. Correct.
+- توله‌سگ (2 kg) → گربه. WRONG — a 2 kg dog! The boundary failure is a feature, not a bug: the machine learned ONE question.
 - فیل (3000 kg) → سگ. The machine only knows two words — let the class laugh.
+
+**Then read the cell's last printed line out loud:** «کل رازِ ماشین فقط یک سؤال بود: وزن ⁦≤ ۱۴⁩ کیلوگرم؟» — and write it on the board. It becomes the session red line (literally) and Session 3's starting mystery.
 
 **Say:** "The machine didn't memorize. It learned one question from 8 examples and guesses beyond them. Sometimes it guesses wrong — Session 2 is about fixing exactly that."
 
@@ -151,14 +154,14 @@ This game is the foundation of Session 2 (decision trees as 20-questions) — pl
 
 **Write on the board (right column, never erased):** ویژگی (feature), برچسب (label), نمونه (example).
 
-Memory hooks:
-- feature = "fingerprint of the thing"
+Memory hooks (one analogy per concept, from the analogy map — nothing ad-hoc):
+- feature = "a clue about the thing"
 - label = "the answer we want"
 - example = "one solved exercise"
 
 **[MISCONCEPTION]** The label is NOT part of what the model reads at quiz time — it is what we HIDE. "The model studies with the answers. Then we take the answers away and quiz it."
 
-**Check question:** "For predicting Titanic survival — name 3 possible features and the label." (features: class, sex, age, fare...; label: survived)
+**Check question:** "For predicting Titanic survival — name 3 possible features and the label." (features: class, gender, age, fare...; label: survived)
 
 ---
 
@@ -174,19 +177,47 @@ Memory hooks:
 
 ---
 
-## Slide 14 — یادگیری نظارت‌شده
+## Slide 14 — سؤال‌های پشتِ سرِ هم (experience)
+
+**[~18:00] The concept-before-code beat.** After the feature vote, the class chains their own guesses into a question sequence.
+
+**Do:** draw WITH them on the board, from their votes: "قرمز است؟ → سیب. قرمز نیست و دراز است؟ → موز. بقیه → انگور."
+
+**Say:** "You just built a decision map — with your hand, no code anywhere. Remember this shape."
+
+**Why this beat exists:** the decision tree arrives INTUITIVELY (fruit, features they voted on) long before `DecisionTreeClassifier` appears at minute 40 — so the code is "the machine's version of what we did by hand," not a magic spell. The NAME is deliberately withheld until Session 2.
+
+---
+
+## Slide 15 — نقشهٔ تصمیمِ میوه (wow)
+
+**SHOW** the fruit decision map (red? → apple · not red, long? → banana · else → grape) — the class's chain, tidied into a proper diagram.
+
+**Trace one fruit together:** "یک چیز بنفش، ریز، چروک" → not red → not long → انگور. Let the class call each door.
+
+**[HONESTY BEAT — the important one]:** the map MISJUDGES 2 of the 6 fruits in A1's own DataFrame. Trace the **green, medium, smooth apple** through the map: not red → not long → it lands in the GRAPE room. Wrong! (The yellow, medium, curved banana lands there too.) Play it straight, then land the point: **"We six-row humans already wrote a map that fails on 2 of 6 fruits — imagine handwriting rules for 8 million photos. THIS is why we make the machine learn the map from the data."** This is the seed of Session 2's hook.
+
+**Say:** "Three questions, three verdicts. A human drew this. Next session you'll see that the MACHINE draws exactly this kind of map — by itself."
+
+**Do NOT name it "decision tree" yet.** Experience first; the name is Session 2's opener (and their hook there).
+
+---
+
+## Slide 16 — یادگیری نظارت‌شده (Supervised Learning)
 
 [20:00–30:00] Segment C — one paradigm today only (unsupervised = 30-second teaser, nothing more).
+
+**The picture carries the concept** (assets/supervised_study_exam.png): RIGHT table = studying with the answer key visible; LEFT table = the new exam, answers hidden. Walk the arrow aloud.
 
 **LIVE MINI-GAME:** show 4 solved fruit examples, then a 5th with the label hidden — class predicts.
 
 **Say:** "You just did supervised learning. Personally. Your brain is a very good one."
 
-**[RUN: cell A3]** — the "hide the label" mechanic: study table vs quiz table, side by side.
+**[RUN: cell A3]** — the "hide the label" mechanic: study table vs quiz table, side by side — the code version of the exact picture on the slide.
 
 ---
 
-## Slide 15 — چرا «نظارت‌شده»؟ (definition)
+## Slide 17 — چرا «نظارت‌شده»؟ (definition)
 
 **[MISCONCEPTION]** "Supervised" does NOT mean a person watches the model learn. It means the training data comes with answer labels — like a teacher's answer key.
 
@@ -198,41 +229,41 @@ The absurdity of the word choice usually gets a laugh — use it.
 
 ---
 
-## Slide 16 — تایتانیک
+## Slide 18 — تایتانیک
 
 [30:00–40:00] Segment D — Titanic as PICTURES, not tables. Students follow along in notebook cells A4–A6.
 
 **Narrate the history while plotting** — iceberg, lifeboats for only half, "women and children first". The story is the engagement engine; the plots are the evidence.
 
-**[RUN: cell A4]** — read the CSV, `df.head()`: "891 passengers. Each row is a life."
+**[RUN: cell A4]** — read the CSV, `df.head()`: "891 passengers. Each row is a life." The cell then prints: *«از ۸۹۱ مسافر، ۷۱۲ نفر اطلاعات کامل دارند»* — take 10 seconds on it: "Real data has holes. Some rows are missing age or port — we keep the 712 complete ones." (This is a first, gentle contact with data cleaning — Session 7 owns the topic.)
 
 **[MISCONCEPTION]** the model reads only the columns we give it. Whatever we don't give does not exist for the model.
 
 ---
 
-## Slide 17 — داده به‌صورت عکس
+## Slide 19 — داده به‌صورت عکس
 
 **[RUN: cell A5]** — survival counts bar chart.
 
-**Say:** "More died than survived — 549 vs 342. Remember this imbalance; it becomes a whole lesson in Session 9."
+**Say:** "More died than survived — 424 vs 288 of the 712 complete rows. Remember this imbalance; it becomes a whole lesson in Session 9."
 
 **Course-wide rule, stated here for the first time:** every dataset gets PLOTTED before it gets MODELED. Students will hear this ~100 times by Session 32.
 
 ---
 
-## Slide 18 — بقا بر حسب جنسیت و کلاس
+## Slide 20 — بقا بر حسب جنسیت و کلاس
 
 **[RUN: cell A6]** — the two punchline plots. **Let students read the bars themselves before you speak.**
 
-**Ask:** "Which feature seems to matter for survival?" — sex, then class.
+**Ask:** "Which feature seems to matter for survival?" — gender, then class.
 
-**Say:** "Being a rich woman in 1912 was close to a survival ticket. A machine trained on this data will learn exactly what these pictures show — no more, no less."
+**Say:** "Being a rich woman in 1912 was close to a survival ticket — look: about 75% of women lived, only 20% of men. A machine trained on this data will learn exactly what these pictures show — no more, no less."
 
 This foreshadows the fairness discussions (Session 9) — do not open that door yet, just leave the sentence standing.
 
 ---
 
-## Slide 19 — لحظهٔ جادویی (codespot)
+## Slide 21 — لحظهٔ جادویی (codespot)
 
 [40:00–50:00] Segment E — **the emotional peak of Session 1.** Slow down.
 
@@ -240,15 +271,15 @@ This foreshadows the fairness discussions (Session 9) — do not open that door 
 
 **[RUN: cell A7]** — X and y separated: "Line 0 is not magic, just setup: clues here, answers there."
 
-**Ceremony before running fit():** "On the count of three, everyone say LEARN. One, two, three — LEARN." (Run it. It takes under a second.) "It just studied 891 lives in under a second."
+**Ceremony before running fit():** "On the count of three, everyone say LEARN. One, two, three — LEARN." (Run it. It takes under a second.) "It just studied 712 lives in under a second."
 
 ---
 
-## Slide 20 — سه خط جادویی (codespot wow)
+## Slide 22 — سه خط جادویی (codespot wow)
 
 **[RUN: cell A8, students typing]** — write the three lines LARGE on the board (center); they stay there.
 
-1. `create` = pick a student (an empty brain, ready to learn)
+1. `create` = pick a student — **name it now: this object is the «مدل (Model)»** (an empty brain, ready to learn)
 2. `fit` = let it study (the supervised part: X are the clues, y the answers)
 3. `predict` = ask it questions (label hidden!)
 
@@ -256,27 +287,27 @@ This foreshadows the fairness discussions (Session 9) — do not open that door 
 
 ---
 
-## Slide 21 — چه چیزی یاد گرفت
+## Slide 23 — چه چیزی یاد گرفت
 
 **[RUN: cell A9]** — predict for a volunteer from the class: "Sara, 2nd class, 13 years old, fare 30 — would Sara have survived?" Personal = memorable.
 
-Then show the tree picture: **"This picture IS the rules it found. No magic — just yes/no questions. You could have drawn this yourself. Who chose these questions? Not us. The machine picked them."**
+Then show the tree picture: **"This picture IS the rules it found. No magic — just yes/no questions. Remember your fruit map from fifteen minutes ago? Same shape — you could have drawn this yourself. Who chose these questions? Not us. The machine picked them."**
 
 That last question is the cliffhanger seed for Session 2.
 
 ---
 
-## Slide 22 — یک حرف آخر (focus)
+## Slide 24 — یک حرف آخر (focus)
 
 This slide is deliberately slow and quiet — the one honest, serious moment of the session.
 
-**Say:** "I want you to be impressed by what we did AND clear-eyed about what it is. A mirror of 714 examples. When the data is good, the mirror is good. When the data is unfair — the mirror is unfair. We'll come back to that."
+**Say:** "I want you to be impressed by what we did AND clear-eyed about what it is. A mirror of 712 examples. When the data is good, the mirror is good. When the data is unfair — the mirror is unfair. We'll come back to that."
 
 Then snap the energy back up for the quiz.
 
 ---
 
-## Slide 23 — امروز یاد گرفتی (quiz)
+## Slide 25 — امروز یاد گرفتی (quiz)
 
 [50:00–55:00] CONSOLIDATION — oral quiz, cold call, FRIENDLY. One question per random student:
 
@@ -289,7 +320,7 @@ Then snap the energy back up for the quiz.
 
 ---
 
-## Slide 24 — تحویل امشب (handout)
+## Slide 26 — تحویل امشب (handout)
 
 [55:00–60:00] THE SHIP + at-home handout. Project `problems/at_home.md`.
 
@@ -303,7 +334,7 @@ Then snap the energy back up for the quiz.
 
 ---
 
-## Slide 25 — تمرین‌های خانه (handout)
+## Slide 27 — تمرین‌های خانه (handout)
 
 One sentence of story per problem (details live in `at_home.md` — do not read it all aloud):
 
@@ -316,7 +347,7 @@ One sentence of story per problem (details live in `at_home.md` — do not read 
 
 ---
 
-## Slide 26 — جلسهٔ بعد (closing)
+## Slide 28 — جلسهٔ بعد (closing)
 
 [60:00 — end exactly on time]
 

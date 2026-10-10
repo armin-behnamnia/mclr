@@ -40,6 +40,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SETUP = """\
 # COURSE SETUP — identical in every session. Just run it. (5 seconds)
 %matplotlib inline
+%pip -q install arabic-reshaper python-bidi  # needed on Colab; already installed locally
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -66,7 +67,7 @@ animals = pd.DataFrame({
     "گروه": ["گربه", "گربه", "گربه", "گربه",
              "سگ بزرگ", "سگ بزرگ", "سگ بزرگ", "سگ بزرگ",
              "سگ کوچک", "سگ کوچک", "سگ کوچک"],
-}, index=["پرشین", "سیامی", "گره‌فیلد", "شارتز",
+}, index=["پرشین", "سیامی", "گارفیلد", "شارتز",
           "بولداگ", "آلمانی", "گلدن", "دابلمان",
           "پودل", "یورکشایر", "پاپیلون"])
 X = animals[["وزن", "طول_گوش"]]
@@ -83,6 +84,7 @@ PART0_MD = """\
 
 PART0_CODE = """\
 # دمو: یک سؤال در برابر دو سؤال — توله‌سگ نجات پیدا می‌کند؟
+%pip -q install arabic-reshaper python-bidi  # needed on Colab; already installed locally
 """ + ANIMALS + """\
 # ماشینِ جلسهٔ ۱: فقط ۱ سؤال (عمق ۱)
 one_q = DecisionTreeClassifier(max_depth=1, random_state=42).fit(X, y)
@@ -165,7 +167,8 @@ answers = model.predict(visitors[X.columns])
 for name, ans in zip(visitors.index, answers):
     print(f"  {name:10} ← {ans}")
 
-# فیل هم از همین راهروها رد می‌شود و به اتاقِ «سگ بزرگ» می‌رسد.
+# نکتهٔ جالب: فیل فقط یک سؤال می‌شنود! وزنش > ۱۴ است، پس مستقیم به اتاقِ برگِ «سگ بزرگ» می‌رسد.
+# سؤالِ گوش فقط در راهروی حیواناتِ سبک است.
 # برگ همیشه فقط یک حکم می‌گوید — برای هر کسی که به آن برسد.
 """
 
@@ -392,7 +395,7 @@ B_CODE_1_SOL = """\
 from sklearn.tree import DecisionTreeClassifier
 
 B1_model = DecisionTreeClassifier(max_depth=2, random_state=42).fit(X, y)
-# سؤال‌های واقعی درخت: ۲ (ریشه + یک سؤال داخل شاخهٔ سگ‌ها)
+# سؤال‌های واقعی درخت: ۲ (ریشه + یک سؤالِ گوش داخل شاخهٔ سبک‌ها — شاخهٔ سنگین‌ها خودش برگ است)
 # برگ‌های درخت: ۳ (گربه، سگ کوچک، سگ بزرگ)
 B1_num_questions = 2
 B1_num_leaves = 3
@@ -407,7 +410,8 @@ model = DecisionTreeClassifier(max_depth=2, random_state=42).fit(X, y)
 elephant = pd.DataFrame({"وزن": [3000], "طول_گوش": [20]})
 B2_elephant_room = model.predict(elephant[X.columns])[0]
 print("فیل به این اتاق می‌رسد:", B2_elephant_room)
-# چرا؟ وزن ۳۰۰۰ > ۱۴ پس سمت سگ‌ها؛ گوش ۲۰ >= ۸.۲۵ پس اتاقِ سگ بزرگ.
+# چرا؟ وزن ۳۰۰۰ > ۱۴، پس فیل از همان سؤالِ اول کنار می‌رود و مستقیم به اتاقِ برگِ «سگ بزرگ» می‌رسد.
+# سؤالِ دوم (گوش ≤ ۸.۲۵) فقط از حیواناتِ سبک پرسیده می‌شود — فیل فقط یک سؤال می‌شنود!
 """
 
 B_CODE_3_SOL = """\

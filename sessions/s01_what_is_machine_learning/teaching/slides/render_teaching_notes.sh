@@ -29,10 +29,14 @@ src = open(sys.argv[1], encoding="utf-8").read()
 # strip horizontal rules (---) — marp would treat them as page breaks
 src = re.sub(r"^---\s*$", "", src, flags=re.M)
 # Build a marp deck: frontmatter + one page per "## ..." heading.
+# The cover title comes from the SOURCE document's own H1 (line starting
+# with "# ") — never hard-coded, so every session renders its own title.
 parts = re.split(r"\n(?=## )", src)
+m = re.search(r"^#\s+(.+)$", parts[0], flags=re.M)
+title = m.group(1).strip() if m else "Teaching Notes"
 out = ["---", "marp: true", "theme: teaching-notes", "paginate: true",
        "---", "", "<!-- _class: lead -->", "", "# Full Teaching Notes", "",
-       "## Session 1 — What is Machine Learning?", "",
+       f"## {title}", "",
        "*The comprehensive per-slide instructor guide — English, LTR*", "", "---", ""]
 for p in parts[1:]:
     p = p.strip()

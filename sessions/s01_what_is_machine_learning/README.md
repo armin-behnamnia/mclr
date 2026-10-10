@@ -12,14 +12,14 @@
 
 | Time | Segment | Mode | Notebook cells |
 |------|---------|------|----------------|
-| 0–5 | Hook: The Animal Game (1 demo, 3 beats) | live demo | PART 0 |
+| 0–5 | Hook: The Animal Game (1 demo, 4 beats) | live demo | PART 0 |
 | 5–10 | The Big Question: rules vs learning | lecture + discussion | — |
 | 10–20 | Features & labels (fruit game) | interactive game | A1–A2 |
 | 20–30 | Supervised learning: showing examples | lecture + visuals | A3 |
 | 30–40 | Titanic as pictures, not tables | live coding + plots | A4–A6 |
 | 40–50 | THE MOMENT: train an AI in 3 lines | live coding, students code along | A7–A9 |
 | 50–55 | Consolidation: check questions | oral quiz | — |
-| 52–60 | At-home handout + GitHub repo + goal recap | walkthrough | B1–B4 |
+| 55–60 | At-home handout + GitHub repo + goal recap | walkthrough | B1–B4 |
 
 ## Problem-solving session (60 min)
 
@@ -34,3 +34,8 @@
 
 ## Judge
 Run `python judge/run.py <student_notebook.ipynb>` — see `judge/README.md` for rubric.
+
+## Post-session retro (fill within 48h of teaching)
+- What confused students:
+- What dragged:
+- What delighted:

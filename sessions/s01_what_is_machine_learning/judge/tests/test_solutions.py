@@ -61,12 +61,20 @@ def grade(ns):
     # ---- B3: The 3 Magic Lines (1 pt)
     try:
         model = ns["B3_model"]
-        probe = ns["B3_X"].head(1)  # model must accept its own training feature space
-        pred = model.predict(probe)
+        # check fitted BEFORE probing: an unfitted tree raises NotFittedError at
+        # predict time, which would bury the specific help below.
         if not hasattr(model, "tree_"):
             results.append((False, 0, "FAIL: Problem B3: B3_model is not a fitted decision tree — did you call .fit(B3_X, B3_y)?"))
         else:
-            results.append((True, 1, "PASS: Problem B3 passed (1/1)"))
+            pred = model.predict(ns["B3_X"].head(1))  # model must accept its own training feature space
+            exp_probe = pd.DataFrame([{c: v for c, v in zip(ns["B3_X"].columns, [1, 0])}])
+            got = ns.get("B3_prediction", ...)
+            if got is ...:
+                results.append((False, 0, "FAIL: Problem B3: B3_prediction is missing — line 3 of the cell asks the model about a medium, non-flying animal."))
+            elif str(got) != str(model.predict(exp_probe)[0]):
+                results.append((False, 0, "FAIL: Problem B3: B3_prediction must be YOUR model's answer for size_num=1, can_fly=0 — call .predict on that exact case."))
+            else:
+                results.append((True, 1, "PASS: Problem B3 passed (1/1)"))
     except KeyError as e:
         which = str(e).strip("'")
         if which == "B3_model":
@@ -78,6 +86,9 @@ def grade(ns):
 
     # ---- B4: The Survival Predictor (1 pt)
     try:
+        if ns["B4_answer"] is ...:
+            results.append((False, 0, "FAIL: Problem B4: the ... placeholders are still there — train your tree (max_depth=3, random_state=42) and put its 0/1 verdict into B4_answer."))
+            return results, TOTAL_POINTS
         ans = int(ns["B4_answer"])
         exp = EXPECTED["B4_answer"]
         if ans == exp:

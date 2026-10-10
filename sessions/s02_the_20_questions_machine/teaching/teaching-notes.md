@@ -47,7 +47,6 @@ Welcome them back like a show is about to continue, because it is.
 **[~3:00] The reveal.** Redraw the game's path on the board as a proper diagram: circle for the first question, two arrows out, circle for the second, arrows into the verdict "گرگ".
 
 **Say (verbatim):** "Every answer was a door. Every door opened a new path. You just walked a tree — a decision tree. And the machine from last session? It plays exactly this game. Its red line was ONE question. One circle, two doors."
-
 **Expect:** "Wait — the red line was a question?!" — that connection is the whole point. Let a STUDENT say it if possible.
 
 ---
@@ -60,7 +59,7 @@ Welcome them back like a show is about to continue, because it is.
 
 **Expect:** "It fixed it?!" Then close the hook: **"You've been playing decision trees your whole life. Today you learn to draw them — on paper and in code."**
 
-**Fallback if the cell fails:** slides 7 and 10 carry the same tree pictures — narrate from them. Never skip the hook's story.
+**Fallback if the cell fails:** slides 7 and 9 carry the same tree pictures — narrate from them. Never skip the hook's story.
 
 ---
 
@@ -76,17 +75,7 @@ Welcome them back like a show is about to continue, because it is.
 
 ---
 
-## Slide 6 — فیل کدام در را می‌گذرد؟ (quiz)
-
-**INTERACTION (2 min).** The elephant (3000 kg, ears 20): the class shouts the door at each node on the projected depth-2 tree.
-
-**Trace:** `وزن ≥ ۱۴؟` yes → dog corridor. `گوش ≥ ۸.۲۵؟` yes → big-dog room.
-
-**Say:** "The elephant walks the same corridors as everyone. A leaf says ONE word for whatever reaches it — even a 3-ton elephant gets called a big dog. The tree has no other room for it."
-
----
-
-## Slide 7 — ماشینِ جلسهٔ ۱ = یک سؤال
+## Slide 6 — ماشینِ جلسهٔ ۱ = یک سؤال
 
 **[RUN: notebook cell A1]** — the depth-1 tree picture. Visually identical mechanic to last session's red line.
 
@@ -96,23 +85,39 @@ Welcome them back like a show is about to continue, because it is.
 
 ---
 
-## Slide 8 — ریشه: اولین سؤال (definition)
+## Slide 7 — ریشه: اولین سؤال (definition)
 
 **[15:00] Segment B.** NAME: **ریشه (root)** — the first fork every animal meets.
 
-**[RUN: notebook cell A2]** — the depth-2 `plot_tree`. Read the two questions aloud together, door by door, for a wolf: weight ≥ 14? yes → ear ≥ 8.25? no → big dog.
+**[RUN: notebook cell A2]** — the depth-2 `plot_tree`. Read the tree aloud together, door by door, for a wolf: weight ≥ 14? yes → big-dog room — ONE question only. The heavy side was already sorted; the tree stopped asking.
 
 **Interaction:** compare with the class's own first questions from the hook game. Most asked weight first too — but with different thresholds (7, 10, 20). Park that observation: "the machine picked exactly 14. Why 14 and not 7? Next session." (This is the cliffhanger's seed — plant it here, water it at the end.)
 
+**[MISCONCEPTION]:** the tree does NOT give every animal the same number of questions. The big dogs get one; cats and small dogs get two. A tree asks only where animals are still mixed — and WHY it stops there is exactly the next session's story.
+
 ---
 
-## Slide 9 — دو سؤال، سه اتاق (wow)
+## Slide 8 — دو سؤال، سه اتاق (wow)
 
-**The punchline picture** — real `plot_tree` output; never replaced by art (its authenticity is part of the lesson).
+**The punchline picture** — the machine's depth-2 tree (the slide twin of the notebook's `plot_tree`: same tree, same thresholds, `random_state=42`; the notebook keeps the authentic matplotlib output).
 
-**Say:** "One question split light from heavy. The second question split cats from small dogs. Three rooms, all 11 animals correctly sorted."
+**Say:** "One question split light from heavy. The heavy side was DONE — all big dogs, room right there. Only the light side needed a second question — ears — to split cats from small dogs. The tree asks where animals are still mixed, and stops where they aren't."
 
 **ASK before running cell A3:** "Which room does the puppy reach now?" — they already know from PART 0; let them say it out loud for the satisfaction.
+
+---
+
+## Slide 9 — فیل کدام در را می‌گذرد؟ (quiz)
+
+**[~22:00 — placed AFTER the depth-2 tree picture, by design: the quiz needs it.]
+
+**INTERACTION (2 min).** The elephant (3000 kg, ears 20): the class shouts the door at the node on the projected depth-2 tree that the previous slide just revealed.
+
+**Trace:** `وزن ≥ ۱۴؟` yes → and the big-dog room is RIGHT THERE. On the heavy side the tree asks no second question — the room is the very next door.
+
+**Say:** "The elephant walks the same corridors as everyone — and gets its verdict after a single question. A leaf says ONE word for whatever reaches it — even a 3-ton elephant gets called a big dog."
+
+**Honest point (say it plainly):** the ear question lives on the LIGHT side only. The tree does not give every animal the same number of questions — it stops asking where the animals are already sorted. (Do not name "purity" yet — that is Session 3's word; today it is just "already sorted".)
 
 ---
 
@@ -120,7 +125,7 @@ Welcome them back like a show is about to continue, because it is.
 
 **[RUN: notebook cell A3]** — visitors: wolf, puppy, elephant. Students trace each path BEFORE the machine answers.
 
-**Trace the puppy:** `وزن ≥ ۱۴؟` no → light corridor. `گوش ≥ ۸.۲۵؟` yes → small-dog room. Correct!
+**Trace the wolf first:** `وزن ≥ ۱۴؟` yes → big-dog room — one question, done. **Then the puppy:** `وزن ≥ ۱۴؟` no → light corridor. `گوش ≥ ۸.۲۵؟` yes → small-dog room. Correct!
 
 **Say:** "The second question — ears — is what separates small dogs from cats. Last session's mistake had a cure: one more question."
 
@@ -215,7 +220,7 @@ Deadline: before the problem-solving session.
 
 ---
 
-## Slide 19 — جلسهٔ بعد (lead, cliffhanger)
+## Slide 19 — جلسهٔ بعد (wow, cliffhanger)
 
 **[60:00 — end on time.]**
 

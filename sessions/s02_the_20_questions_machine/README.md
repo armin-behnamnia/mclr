@@ -36,6 +36,11 @@ Run `python judge/run.py <student_notebook.ipynb>` — see `judge/README.md` for
 
 ## Instructor runbook (open in this order)
 1. `teaching/slides/slides.pdf` (or `slides_with_notes.pdf` for the annotated deck)
-2. The notebook, scrolled to PART 0 — the hook's machine beat is cell 1
+2. The notebook, scrolled to PART 0 — the hook's machine beat is the demo cell (the one printing «یک سؤال / دو سؤال»)
 3. Paper handouts ready BEFORE class: the 11-animal table, one per student (print from `assets/animals_table.pdf` or copy from the notebook)
 4. Full per-slide script: `teaching/teaching-notes.md` (rendered: `teaching/slides/slides_teaching_notes.pdf`)
+
+## Post-session retro (fill within 48h of teaching)
+- What confused students:
+- What dragged:
+- What delighted:

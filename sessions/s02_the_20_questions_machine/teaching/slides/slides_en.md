@@ -67,11 +67,13 @@ Last session: one question ← the puppy became a cat!
 
 Today: it is allowed **two questions.**
 
+![depth-1 vs depth-2 battle](../../assets/demo_depth1_vs_depth2.png)
+
 <!--
-[RUN: PART 0 demo cell] Depth-1 vs depth-2, puppy verdict under each.
+[RUN: PART 0 demo cell — once] Depth-1 vs depth-2, puppy verdict under each; the picture above is its output.
 SAY: "One question got the puppy wrong. Watch what a second question does."
 EXPECT: "It fixed it?!" Close: "You've played decision trees your whole life."
-FALLBACK: narrate from slides 7 and 10.
+FALLBACK: narrate from this picture (it is the demo's output, committed in assets).
 -->
 
 ---
@@ -92,23 +94,6 @@ FALLBACK: narrate from slides 7 and 10.
 Point at the BOARD path: node = question, branch = door, leaf = verdict room.
 [MISCONCEPTION] the tree cannot change questions mid-game — path is fixed.
 CHECK: "Max leaves of a 2-question tree?" (4)
--->
-
----
-<!-- _class: quiz -->
-
-# Which Door Does the Elephant Take?
-
-`weight >= 14?` ← yes
-
-`ears >= 8.25?` ← yes
-
-*Verdict: big dog!*
-
-<!--
-INTERACTION (2 min): class shouts the elephant's door at each node on the projected tree.
-Trace: weight >= 14 yes, ears >= 8.25 yes, big-dog room.
-SAY: "A leaf says ONE word for whatever reaches it — even a 3-ton elephant." 
 -->
 
 ---
@@ -138,8 +123,9 @@ What did YOU ask first in the game?
 
 <!--
 [15:00] Segment B. NAME: root = the first fork.
-[RUN: cell A2] class reads both questions aloud for a wolf.
+[RUN: cell A2] class reads the tree aloud door by door for a wolf: weight >= 14 yes — big-dog room, one question only.
 INTERACTION: their first questions from the hook — most asked weight too.
+[MISCONCEPTION] the tree does not ask every animal the same number of questions — the heavy side ends after ONE question (already pure); only the light side gets the ear question.
 Plant: "the machine picked exactly 14. Why? Next session." 
 -->
 
@@ -150,12 +136,29 @@ Plant: "the machine picked exactly 14. Why? Next session."
 
 ![depth-2 tree](../../assets/decision_tree_s02_d2.png)
 
-Cats, big dogs, small dogs — each gets its own room.
+Big dogs with **one** question; cats and small dogs need the second.
 
 <!--
-[RUN: cell A2] THE punchline picture — real plot_tree output.
-SAY: "One question split light from heavy. The second split cats from small dogs."
+[RUN: cell A2] THE punchline picture — the machine's depth-2 tree (slide twin of the notebook's plot_tree).
+SAY: "One question split light from heavy. The heavy side was DONE — big dogs. Only the light side needed the ear question."
 ASK before running: "Which room does the puppy reach now?" — let them say it.
+NEXT: the elephant test on the very next slide — keep this picture in view.
+-->
+
+---
+<!-- _class: quiz -->
+
+# Which Door Does the Elephant Take?
+
+`weight >= 14?` ← yes
+
+*Verdict: big dog — with no second question!*
+
+<!--
+[~22:00] INTERACTION (2 min): with the depth-2 tree still projected, the class shouts the elephant's door.
+Trace it live: weight >= 14 → yes — and the big-dog room is RIGHT THERE. The heavy side is already pure; the tree asks no second question.
+SAY: "A leaf says ONE word for whatever reaches it — even a 3-ton elephant, after a single question."
+HONEST POINT: the ear question lives on the LIGHT side only — the tree asks where animals are still mixed.
 -->
 
 ---
@@ -307,17 +310,17 @@ Show the judge command: python judge/run.py s02_notebook.ipynb
 2. **B2** Which room does the elephant reach?
 3. **B3** The smallest perfect depth
 
-Deadline: before the next (problem-solving) session.
+`python judge/run.py s02_notebook.ipynb` ← instant score, anytime
 
 <!--
 One sentence of story per problem:
 B1 count the tree's questions and rooms; B2 trace the elephant's path; B3 find the smallest perfect depth with the loop.
-Deadline: before the problem-solving session.
+Deadline: before the problem-solving session. ~20-30 min total. First judge run is all-red — that's normal.
 -->
 
 ---
 
-<!-- _class: lead -->
+<!-- _class: wow -->
 <!-- _paginate: false -->
 
 # Next Session

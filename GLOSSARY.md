@@ -14,3 +14,6 @@ One canonical glossary for the whole course (session-creation-guide §13). Every
 | برگ (Leaf) | the final room — where the game ends and the verdict is said | S2 |
 | ریشه (Root) | the first question — the fork every animal meets first | S2 |
 | عمق (Depth / max_depth) | the longest question path — how many questions the machine may ask at most | S2 |
+| خلوص (Purity) | how sorted a box is — how close it is to ONE thing per room | S3 |
+| آنتروپی (Entropy) | the surprise level of a box — 0 when pure, bigger as the mix grows | S3 |
+| بهرهٔ اطلاعاتی (Information gain) | the surprise a question removes — before minus after; the machine's score for every question | S3 |

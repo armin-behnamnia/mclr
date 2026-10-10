@@ -7,6 +7,8 @@
 #
 # Usage:  ./preview.sh                 (Persian deck, slides.md)
 #         ./preview.sh slides_en.md    (English deck)
+#         PORT=8081 ./preview.sh       (choose the port — default 8080;
+#                                       run several sessions side by side)
 #
 # What it does:
 #   - starts a local Marp server with the course theme, RTL and Vazirmatn
@@ -23,8 +25,9 @@
 set -e
 SLIDES_DIR="$(cd "$(dirname "$0")" && pwd)"
 COURSE_ROOT="$(cd "$SLIDES_DIR/../../../.." && pwd)"
-THEME="$COURSE_ROOT/slide-theme/mlcourse-fa.css"
+THEME="$COURSE_ROOT/slide-theme/mlcourse-blue-fa.css"
 DECK="${1:-slides.md}"
+PORT="${PORT:-8080}"
 
 # font must sit next to the deck for the theme to load it
 if [ ! -f "$SLIDES_DIR/Vazirmatn.ttf" ]; then
@@ -38,7 +41,7 @@ for art in shared_hero.png shared_closing.png shared_band.png; do
 done
 
 cd "$SLIDES_DIR"
-DECK_URL="http://localhost:8080/teaching/slides/$DECK"
+DECK_URL="http://localhost:$PORT/teaching/slides/$DECK"
 echo "Live preview starting -> open $DECK_URL in your browser"
 echo "Edit $DECK and save; the browser updates within a second."
 echo "Press P in the browser for presenter view (notes + next slide)."

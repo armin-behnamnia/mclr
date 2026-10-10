@@ -2,7 +2,9 @@
 
 ## B1 — The Leaf Counter (1 pt)
 
-**Reasoning:** the depth-2 tree on the 11 animals asks a first question (`weight ≥ 14`) and, on the dog side, a second question (`ear length ≥ 8.25`). The longest path from root to leaf passes 2 question-circles. The rooms: one for cats, one for small dogs, one for big dogs — 3 leaves.
+**Reasoning:** the depth-2 tree on the 11 animals asks a first question (`weight ≤ 14`?) and, **on the LIGHT side only**, a second question (`ear length ≤ 8.25`?) that separates the cats from the small dogs. The heavy side needs no second question — all four big dogs land straight in the big-dog leaf. So the tree has 2 question-nodes and 3 leaves (cat room, small-dog room, big-dog room). Nicer check: `model.get_depth()` and `model.get_n_leaves()`.
+
+**Common wrong approach:** assuming every branch asks the same questions. A tree asks the *next* question only where it is needed — branches can have different depths (here: heavy animals get their verdict after ONE question).
 
 **Answer:**
 ```python
@@ -17,7 +19,7 @@ B1_num_leaves = 3
 
 ## B2 — The Elephant's Room (1 pt)
 
-**Reasoning:** trace the path: `weight ≥ 14`? 3000 ≥ 14 → YES, the dog corridor. `ear length ≥ 8.25`? 20 ≥ 8.25 → YES → the big-dog room. The elephant is not a dog, but the tree only knows rooms, not animals.
+**Reasoning:** trace the path: `weight ≤ 14`? 3000 ≤ 14 → NO, the heavy corridor — and that corridor IS already the big-dog leaf. **The elephant hears only ONE question** (the ear question lives on the light side: that's where cats and small dogs still need separating). The elephant is not a dog, but the tree only knows rooms, not animals.
 
 **Answer:**
 ```python

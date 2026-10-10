@@ -12,7 +12,7 @@
 # Requires: marp CLI (npm i -g @marp-team/marp-cli), python-pptx for the pptx.
 
 # Theme + Persian font are resolved from the course-level slide-theme/ dir.
-# Requires: B-NAZANIN.TTF next to mlcourse-fa.css there.
+# Requires: Vazirmatn.ttf and mlcourse-blue-fa.css in slide-theme/ (course root).
 set -e
 SLIDES_DIR="$(cd "$(dirname "$0")" && pwd)"
 COURSE_ROOT="$(cd "$SLIDES_DIR/../../../.." && pwd)"
