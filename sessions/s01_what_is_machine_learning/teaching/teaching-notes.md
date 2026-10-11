@@ -10,7 +10,7 @@
 - **Goal (student language):** "By the end of today, YOU will be able to train a working ML model and show it to your family."
 - **Before class — verify all of this:**
   - notebook `s01_notebook.ipynb` runs top-to-bottom (Colab or Jupyter)
-  - the single PART 0 demo cell works (the whole hook depends on it; it prints «مرحلهٔ ۱/۳/۴» markers)
+  - the single PART 0 demo cell works (the whole hook depends on it; it prints the `stage 1/3/4` markers)
   - slide assets exist in `assets/`
   - the judge passes on the solution notebook
 - **Session timing map:** hook 0–5 · big question 5–10 · fruit game 10–20 · supervised 20–30 · Titanic 30–40 · magic lines 40–50 · quiz 50–55 · handout 55–60.
@@ -36,7 +36,7 @@ The first minute sets the tone for the whole course. Welcome them like a show is
 
 **Say:** "By the end of today, you will build what you are about to see."
 
-**How to run:** open the notebook, PART 0, run the demo cell once. The output carries the whole story: 8-row table → scatter plot with the red dashed line → verdicts on 4 unseen animals → the printed reveal: «کل رازِ ماشین فقط یک سؤال بود: وزن ⁦≤ ۱۴⁩ کیلوگرم؟». Narrate between beats in under 15 seconds.
+**How to run:** open the notebook, PART 0, run the demo cell once. The output carries the whole story: 8-row table → scatter plot with the red dashed line → verdicts on 4 unseen animals → the printed reveal: `the machine's whole secret was ONE question: weight <= 14 kg?`. Narrate between beats in under 15 seconds.
 
 **Fallback if environment fails:** narrate from the demo description while showing slides 3–5; if the cell errors, re-run once, then move on. NEVER skip the hook — it is the fuel for the whole session.
 
@@ -44,7 +44,7 @@ The first minute sets the tone for the whole course. Welcome them like a show is
 
 ## Slide 3 — بازیِ حیوانات: جدول (hook)
 
-**[RUN: PART 0 demo cell, beat «مرحلهٔ ۱»]** — the machine's entire world: 8 animals, each with two numbers (weight, ear length) and a label (cat/dog).
+**[RUN: PART 0 demo cell, beat `stage 1`]** — the machine's entire world: 8 animals, each with two numbers (weight, ear length) and a label (cat/dog).
 
 **Say:** "This table is ALL the machine gets. Eight rows. Nobody wrote a single rule."
 
@@ -54,7 +54,7 @@ The first minute sets the tone for the whole course. Welcome them like a show is
 
 ## Slide 4 — بازیِ حیوانات: خطِ ماشین (hook)
 
-**[RUN: PART 0 demo cell, beat «مرحلهٔ ۳» — the scatter plot]** — from those 8 rows, the machine drew a red dashed line: cats behind it, dogs in front. (Beat «مرحلهٔ ۲» was the silent `.fit()` — one invisible line of code.)
+**[RUN: PART 0 demo cell, beat `stage 3` — the scatter plot]** — from those 8 rows, the machine drew a red dashed line: cats behind it, dogs in front. (Beat `stage 2` was the silent `.fit()` — one invisible line of code.)
 
 **Say:** "No human drew this line. The machine found it hiding in those 8 rows."
 
@@ -66,13 +66,13 @@ The first minute sets the tone for the whole course. Welcome them like a show is
 
 ## Slide 5 — بازیِ حیوانات: امتحان (hook)
 
-**[RUN: PART 0 demo cell, beat «مرحلهٔ ۴»]** — verdicts on animals the machine has NEVER seen:
+**[RUN: PART 0 demo cell, beat `stage 4`]** — verdicts on animals the machine has NEVER seen:
 - گرگ (35 kg) → سگ. Correct.
 - گربهٔ همسایه (7 kg) → گربه. Correct.
 - توله‌سگ (2 kg) → گربه. WRONG — a 2 kg dog! The boundary failure is a feature, not a bug: the machine learned ONE question.
 - فیل (3000 kg) → سگ. The machine only knows two words — let the class laugh.
 
-**Then read the cell's last printed line out loud:** «کل رازِ ماشین فقط یک سؤال بود: وزن ⁦≤ ۱۴⁩ کیلوگرم؟» — and write it on the board. It becomes the session red line (literally) and Session 3's starting mystery.
+**Then read the cell's last printed line out loud:** `the machine's whole secret was ONE question: weight <= 14 kg?` — and write it on the board. It becomes the session red line (literally) and Session 3's starting mystery.
 
 **Say:** "The machine didn't memorize. It learned one question from 8 examples and guesses beyond them. Sometimes it guesses wrong — Session 2 is about fixing exactly that."
 

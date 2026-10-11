@@ -203,12 +203,12 @@ Timing is a guide; **priority is not**: at-home problems are always fully solved
  - `# PART A — Teaching session` (cells worked live in the teaching hour, guided, with TODOs resolved together)
  - `# PART B — At-home problems` (starter cells for each at-home problem — these are what the judge inspects)
  - `# PART C — Problem-solving session` (cells for in-class problems, completed together)
-- **Student-facing language: Persian** for all markdown and printed output. Code, variable names, and column names stay in English (they must match the judge).
+- **Language split — markdown Persian, code 100% English.** Markdown cells are Persian, full RTL. **Code cells are 100% English/LTR — no exceptions:** no Persian in comments, variable names, strings, prints, DataFrame column names, category values, or matplotlib labels. Persian inside a code cell scrambles (the console does no bidi; printed tables with Persian columns come out ragged) and forces matplotlib reshaping hacks that render right-to-left and break elsewhere. So the kid-facing data labels used *in code* are English (`weight`, `ear_length`, `animal`, `cat`, `big dog`, …); the Persian teaching narrative lives in the markdown cell above, and the Persian figures are built by separate diagram generators from their own data, not from the notebook. Whenever a graded answer string changes language, update the judge's `data/expected.json` in the same change.
 - Every cell that plots something keeps its plot in the committed solution notebook.
 - **Generator is the source of truth:** each session has `notebook/build_notebooks.py` that emits BOTH the student starter and the solution notebook. Never hand-edit the `.ipynb` files — fix the generator and regenerate. Before overwriting, regenerate to a scratch dir and diff cell-by-cell: drift means someone hand-patched (recover by rebasing the generator, then regen). Deterministic cell ids make diffs readable.
 - **Student starter is runnable-but-unsolved:** graded cells contain TODO scaffolding with graded variables left undefined, so the starter executes clean AND scores 0/4 with specific "did you fill in cell BN?" hints from the judge.
 - **Strip the PART 0 hook outputs from the student starter** (the reveal must stay a surprise in class); the solution notebook keeps ALL outputs committed.
-- **Colab-installed deps:** any non-stdlib import (e.g. `arabic-reshaper`, `python-bidi`) gets a `%pip -q install ...` line at the top of the setup cell AND the PART 0 demo cell (the demo may run before setup).
+- **Colab-installed deps:** any non-stdlib import gets a `%pip -q install ...` line at the top of the setup cell AND the PART 0 demo cell (the demo may run before setup).
 - **Local data fallback:** notebooks that read a CSV ship it in `assets/` and fall back to the URL — class wifi is not a dependency.
 - Notebooks must run top-to-bottom in Google Colab with only the provided `assets/` and standard course installs (one setup cell at the top, identical across all sessions).
 - Markdown between cells always states *why* before *what* — a student reopening the notebook a month later should be able to follow it alone.
@@ -245,8 +245,8 @@ Timing is a guide; **priority is not**: at-home problems are always fully solved
 - The hook gets its own dramatic slide (or none — pure demo).
 - Slide count guide: **10–20 slides** per teaching session.
 - **Session skeleton (junior-tutor §5, verified by Layer J):** mystery hook → experience the concept (game/vote/demo) → name it (`definition` + `[MISCONCEPTION]` in note) → use it (quiz/vote/code) → **Ship slide** (capability picture: what THEY can do now) → at-home problems (`handout`) → cliffhanger (`wow`) for the next session.
-- End slides, always in this order: the session goal (re-stated), the Ship, the at-home problems, and the judge command.
-- **The judge command must be VISIBLE on a slide**, not only in a note — students photograph slides, not notes.
+- End slides, always in this order: the session goal (re-stated), the Ship, the at-home problems.
+- **Instructor-only material never goes on a slide.** Slides are projected and photographed by students — judge commands, answer keys, and rubrics live in presenter notes, teaching-notes.md, and the teach guide; nowhere on the slide surface. (Supersedes the old "judge command must be visible" rule — the judge is the instructor's tool.)
 - **Quizzes that consume a reveal come AFTER the reveal.** If a quiz asks students to trace something on a picture (tree, plot), that picture must appear on a slide BEFORE the quiz — otherwise the quiz spoils the reveal and doubles as its own answer key.
 - **Honest captions:** a caption must survive contact with the data. If a split's "pure" side holds exactly one animal, say so — the weighted-average lesson depends on it. Never write "both sides stay mixed" when one side is pure.
 - **Recompute every number in every artifact** (slides, notes, problems, solutions, diagrams) against the actual notebook before delivery — and grep for the numbers' other homes afterwards. "1.58 vs 1.57" and "three vs two-and-a-half times" class errors are found by recomputation, not by re-reading.
@@ -260,7 +260,7 @@ Timing is a guide; **priority is not**: at-home problems are always fully solved
  - `<!-- _class: quiz -->` — consolidation/quiz slides (dashed frame)
  - `<!-- _class: handout -->` — at-home problem slides (light-blue frame)
  - `<!-- _class: ltr -->` — LTR escape hatch for English decks (left-aligned text, LTR tables/lists); usable as global `class: ltr` in front matter or composed per slide (`<!-- _class: ltr lead -->`)
-- **Code blocks:** always tag the fence with a language (```` ```python ````) so the theme's hljs palette renders syntax colors (the theme ships the code-card chrome: tint, accent bar, dots, `~/ml-course`). A flat single-color code block is a bug.
+- **Code blocks:** always tag the fence with a language (```` ```python ````) so the theme's hljs palette renders syntax colors (the theme ships the code-card chrome: tint, accent bar, dots, `~/ml-course`). A flat single-color code block is a bug. **No Persian inside code blocks** — comments, identifiers, and pseudocode are English (RTL text in a LTR-isolated code block also renders scrambled); fa and en decks share the code verbatim.
 
 ### 9.3 AI-generated slide art (mandatory tool, use it)
 
@@ -346,7 +346,7 @@ A session is **done** only when every box is checked:
 - [ ] Zero overflow: no image or text block extends past the slide box on any page of `slides.pdf`, `slides_en.pdf`, or `slides_with_notes.pdf` (verify programmatically: every image bbox and text block must lie within the 960x540 page rect). The theme enforces image max-heights and a flex overflow guard, but a slide that stacks a heading + table + image + caption can still overflow — if it does, cut content (e.g., drop a redundant image), never shrink the font. One strong visual per slide
 - [ ] AI-generated art: hero + hook + at least one concept illustration, all with course style keywords and `no text`, seeds pinned and recorded in `assets/images-manifest.md` (see §9.3)
 - [ ] Teaching content.md: segments ≤15 min, each with a visual, a misconception, and a check-question
-- [ ] Slides exported, visual-first, ending with goal/Ship/at-home/judge slides
+- [ ] Slides exported, visual-first, ending with goal/Ship/at-home slides
 - [ ] Notebook: A/B/C split, runs top-to-bottom in Colab, solution version complete with plots
 - [ ] At-home problems: 2–4, 20–40 min, difficulty ladder, all judge-gradable, handed out at end of teaching hour
 - [ ] Solutions: full reasoning + common wrong approaches, for both at-home and in-class sets

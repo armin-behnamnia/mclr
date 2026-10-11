@@ -35,10 +35,10 @@ Run the single PART 0 demo cell (zero-terminal rule — no scripts, no terminal)
 
 | # | Beat (printed marker) | Script | Expected reaction |
 |---|------|--------|-------------------|
-| 1 | **The table** («مرحلهٔ ۱ · جدول») — the machine's entire world: 8 animals, two numbers each (weight, ear length) + a label (cat/dog) | "This table is ALL the machine gets. Eight rows. Nobody wrote a single rule." | "So what? It's just a table." — let them underestimate it |
-| 2 | **The silent fit** («مرحلهٔ ۲» — one line of code, nothing prints) | "Watch: it just studied. That's it. That's the whole spell." | "Wait — that was it?" |
-| 3 | **The line** («مرحلهٔ ۳ · خطِ ماشین») — the scatter plot: the machine's own red dashed line, cats behind, dogs in front | "No human drew this line. The machine found it hiding in those 8 rows." | "Where did the line come from?!" — let it hang until slide 9 |
-| 4 | **The quiz + the reveal** («مرحلهٔ ۴ · امتحان») — verdicts on animals it has NEVER seen: wolf→dog (right), neighbor's cat→cat (right), puppy→cat (WRONG — a 2 kg dog!), elephant→dog (it only knows two words); the cell then prints the reveal: the whole secret is ONE question, «وزن ⁦≤ ۱۴⁩ کیلوگرم؟» | "The line is a guess from 8 examples. Near the line, the guess breaks. And the whole machine is one question — HOW it picked that question is Session 3's mystery." | Laughter at the elephant + "Why did it get the puppy wrong?!" |
+| 1 | **The table** (prints `stage 1 - the table`) — the machine's entire world: 8 animals, two numbers each (weight, ear length) + a label (cat/dog) | "This table is ALL the machine gets. Eight rows. Nobody wrote a single rule." | "So what? It's just a table." — let them underestimate it |
+| 2 | **The silent fit** (stage 2 — one line of code, nothing prints) | "Watch: it just studied. That's it. That's the whole spell." | "Wait — that was it?" |
+| 3 | **The line** (prints `stage 3 - the machine's line`) — the scatter plot: the machine's own red dashed line, cats behind, dogs in front | "No human drew this line. The machine found it hiding in those 8 rows." | "Where did the line come from?!" — let it hang until slide 9 |
+| 4 | **The quiz + the reveal** (prints `stage 4 - exam with unseen animals`) — verdicts on animals it has NEVER seen: wolf→dog (right), neighbor's cat→cat (right), puppy→cat (WRONG — a 2 kg dog!), elephant→dog (it only knows two words); the cell then prints the reveal: the whole secret is ONE question, `weight <= 14 kg?` | "The line is a guess from 8 examples. Near the line, the guess breaks. And the whole machine is one question — HOW it picked that question is Session 3's mystery." | Laughter at the elephant + "Why did it get the puppy wrong?!" |
 
 Closing line (memorize this): 
 > "One idea behind everything you just saw. You'll know it in 30 minutes, and you'll build your own before you leave today."

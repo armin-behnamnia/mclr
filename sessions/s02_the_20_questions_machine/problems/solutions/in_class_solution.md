@@ -6,17 +6,17 @@
 
 | Animal | (weight, ear) | Tree verdict | Fair? |
 |---|---|---|---|
-| خرگوش rabbit | (2, 10) | سگ کوچک (small dog) | the famous failure — cat-weight, dog-ears |
-| روباه fox | (8, 4) | گربه (cat) | defensible: small, short ears |
-| همستر hamster | (0.5, 3) | گربه (cat) | defensible-but-funny: the smallest "cat" ever |
-| گنجشک sparrow | (0.03, 2) | گربه (cat) | the class laughs: a 30-gram "cat" |
-| شیر lion | (160, 20) | سگ بزرگ (big dog) | defensible: heavy, long ears |
+| خرگوش rabbit | (2, 10) | "small dog" | the famous failure — cat-weight, dog-ears |
+| روباه fox | (8, 4) | "cat" | defensible: small, short ears |
+| همستر hamster | (0.5, 3) | "cat" | defensible-but-funny: the smallest "cat" ever |
+| گنجشک sparrow | (0.03, 2) | "cat" | the class laughs: a 30-gram "cat" |
+| شیر lion | (160, 20) | "big dog" | defensible: heavy, long ears |
 
 **Where the discussion should land:** every verdict is the room the animal's two numbers walk into. The tree never saw a rabbit, a sparrow, or a lion — its rooms were built from 11 cats-and-dogs only. Trace each failure path aloud: which question sent the animal the wrong way? (For ALL of them: the first question — weight — is doing the sorting; ear length only separates the light side.)
 
 ## C2 — Tree Surgery
 
-**Actual verdicts (verified):** with `max_depth=5` AND with 4 extra small dogs, the rabbit still lands in سگ کوچک. No verdict in the zoo changes at all.
+**Actual verdicts (verified):** with `max_depth=5` AND with 4 extra small dogs, the rabbit still lands in "small dog". No verdict in the zoo changes at all.
 
 **Why depth doesn't fix it:** deeper trees add MORE questions, but every question is still about the same two numbers. The rabbit (2, 10) and the poodle (4, 11) are nearly identical in this feature space — any fence on weight or ear length that keeps the poodle with the small dogs keeps the rabbit there too.
 

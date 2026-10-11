@@ -2,7 +2,7 @@
   "B1_surprise_a": 0.0,
   "B1_surprise_b": 1.0,
   "B1_surprise_c": 0.46899559358928117,
-  "B2_champion": "طول_گوش ≥ 8.25",
+  "B2_champion": "ear_length >= 8.25",
   "B2_gain_ears_825": 0.9852281360342515,
   "B2_gain_ears_70": 0.5216406363433185,
   "B2_gain_weight_375": 0.0059777114237737905,

@@ -202,7 +202,7 @@ CHECK: "Leaves at depth 1 / 2 / 3?" (2/4/8)
 # دستت را روی پیچ بگذار
 
 ```python
-max_depth = 2   # عدد را عوض کن
+max_depth = 2   # change the number
 
 model = DecisionTreeClassifier(max_depth=max_depth)
 model.fit(X, y)
@@ -298,7 +298,7 @@ If anyone stumbles on Q1-3, re-explain NOW.
 
 <!--
 [55:00] SHIP + loop OUT LOUD: photo committed tonight; 3 problems (20-30 min); next session opens by solving them TOGETHER from their attempts.
-Show the judge command: python judge/run.py s02_notebook.ipynb
+Show how at-home notebooks get judged (instructor-only run): python judge/run.py s02_notebook.ipynb
 -->
 
 ---
@@ -309,8 +309,6 @@ Show the judge command: python judge/run.py s02_notebook.ipynb
 1. **B1** شمارندهٔ سؤال و برگ
 2. **B2** اتاقِ فیل کدام است؟
 3. **B3** کوچک‌ترین عمقِ بی‌نقص
-
-`python judge/run.py s02_notebook.ipynb` ← نمرهٔ فوری، هر وقت خواستی
 
 <!--
 One sentence of story per problem:

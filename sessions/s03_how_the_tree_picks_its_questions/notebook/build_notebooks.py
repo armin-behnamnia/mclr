@@ -4,7 +4,7 @@ Run:  python build_notebooks.py
 Outputs: notebook/s03_notebook.ipynb (student)
          notebook/s03_notebook_solution.ipynb (instructor)
 """
-import json, os, uuid
+import json, os, sys, uuid
 
 
 def md(src):
@@ -45,12 +45,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from scipy.stats import entropy as _sc_entropy
-import arabic_reshaper
-from bidi.algorithm import get_display
-
-def fa(text):
-    # Persian text for matplotlib: shapes + orders it correctly
-    return get_display(arabic_reshaper.reshape(str(text)))
 
 def surprise(labels):
     # the surprise level of a box (entropy) — from COUNTS, no formula needed.
@@ -65,16 +59,16 @@ print("Setup OK — let's measure some questions.")
 # ---------------------------------------------------------------- shared data
 ANIMALS = """\
 animals = pd.DataFrame({
-    "وزن": [4.5, 3.0, 6.0, 5.0,   22, 32, 28, 38,   4, 3.5, 4.5],
-    "طول_گوش": [5, 7, 4, 6,        9, 12, 11, 13,    11, 9.5, 10],
-    "گروه": ["گربه", "گربه", "گربه", "گربه",
-             "سگ بزرگ", "سگ بزرگ", "سگ بزرگ", "سگ بزرگ",
-             "سگ کوچک", "سگ کوچک", "سگ کوچک"],
-}, index=["پرشین", "سیامی", "گره‌فیلد", "شارتز",
-          "بولداگ", "آلمانی", "گلدن", "دابلمان",
-          "پودل", "یورکشایر", "پاپیلون"])
-X = animals[["وزن", "طول_گوش"]]
-y = animals["گروه"]
+    "weight": [4.5, 3.0, 6.0, 5.0,   22, 32, 28, 38,   4, 3.5, 4.5],
+    "ear_length": [5, 7, 4, 6,        9, 12, 11, 13,    11, 9.5, 10],
+    "group": ["cat", "cat", "cat", "cat",
+              "big dog", "big dog", "big dog", "big dog",
+              "small dog", "small dog", "small dog"],
+}, index=["persian", "siamese", "garfield", "chartreux",
+          "bulldog", "german", "golden", "doberman",
+          "poodle", "yorkshire", "papillon"])
+X = animals[["weight", "ear_length"]]
+y = animals["group"]
 """
 
 TITANIC = """\
@@ -97,11 +91,11 @@ PART0_MD = """\
 """
 
 PART0_CODE = """\
-# دمو: ماشین سؤال‌ها را امتحان می‌کند و نمره می‌دهد
+# DEMO: the machine tests questions and scores them
 """ + ANIMALS + """
 
 def surprise_after(feature, th):
-    # نمرهٔ یک سؤال: میانگینِ غافلگیریِ دو طرفِ در، بعد از شکستن
+    # a question's score: average surprise of the two sides of the door, after splitting
     left  = y[animals[feature] <  th]
     right = y[animals[feature] >= th]
     if len(left) == 0 or len(right) == 0:
@@ -109,18 +103,18 @@ def surprise_after(feature, th):
     return (len(left) * surprise(left) + len(right) * surprise(right)) / len(y)
 
 before = surprise(y)
-print(f"غافلگیریِ جعبهٔ اصلی (۱۱ حیوان): {before:.2f}")
+print(f"surprise of the main box (11 animals): {before:.2f}")
 print()
-print("جدول امتیازها — سؤال | غافلگیری بعد از سؤال | نمرهٔ سؤال (بهره):")
-candidates = [("وزن", 14), ("طول_گوش", 8.25), ("وزن", 3.25), ("طول_گوش", 4.5), ("وزن", 30)]
+print("scoreboard - question | surprise after | question score (gain):")
+candidates = [("weight", 14), ("ear_length", 8.25), ("weight", 3.25), ("ear_length", 4.5), ("weight", 30)]
 for feature, th in candidates:
     after = surprise_after(feature, th)
-    print(f"  {feature} ≥ {th:5}  |  {after:.2f}  |  بهره = {before - after:.2f}")
+    print(f"  {feature} >= {th:5}  |  {after:.2f}  |  gain = {before - after:.2f}")
 
 print()
 best = max(candidates, key=lambda c: before - surprise_after(*c))
-print(f"قهرمانِ ماشین: {best[0]} ≥ {best[1]}  (بیشترین بهره)")
-print("همان سؤالی که جلسهٔ ۲ دیدیم — حالا می‌دانیم از کجا آمده.")
+print(f"the machine's champion: {best[0]} >= {best[1]}  (biggest gain)")
+print("the very question we saw in session 2 — now we know where it came from.")
 """
 
 # ---------------------------------------------------------------- PART A
@@ -132,18 +126,18 @@ A_MD_1 = """\
 """
 
 A_CODE_1 = """\
-# A1 — دو سؤال را کنار هم ببین: یکی مرتب می‌کند، یکی فقط تکه می‌کند
+# A1 — see two questions side by side: one sorts, one merely slices
 """ + ANIMALS + """
-for feature, th, verdict in [("وزن", 14, "سؤالِ خوب"),
-                             ("طول_گوش", 4.5, "سؤالِ بیهوده")]:
+for feature, th, verdict in [("weight", 14, "good question"),
+                             ("ear_length", 4.5, "useless question")]:
     left  = y[animals[feature] <  th].value_counts()
     right = y[animals[feature] >= th].value_counts()
-    print(f"--- {feature} ≥ {th}  ({verdict}) ---")
-    print("  درِ نه :", dict(left))
-    print("  درِ بله:", dict(right))
+    print(f"--- {feature} >= {th}  ({verdict}) ---")
+    print("  no door :", dict(left))
+    print("  yes door:", dict(right))
     print()
 
-# سؤال خوب: یک طرف فقط سگ بزرگ است (مرتب). سؤال بیهوده: هر دو طرف مثل قبلِ قاطی‌اند.
+# good question: one side is only big dogs (sorted). Useless question: both sides stay as mixed as before.
 """
 
 A_MD_2 = """\
@@ -158,23 +152,23 @@ A_MD_2 = """\
 """
 
 A_CODE_2 = """\
-# A2 — خط‌کشِ ماشین: غافلگیریِ هر کیسه
+# A2 — the machine's ruler: the surprise of each bag
 bags = {
-    "کیسهٔ ۱ (۸ آبی)":            ["آبی"] * 8,
-    "کیسهٔ ۲ (۴ آبی + ۴ قرمز)":   ["آبی"] * 4 + ["قرمز"] * 4,
-    "کیسهٔ ۳ (۳ آبی + ۳ قرمز + ۲ سبز)": ["آبی"] * 3 + ["قرمز"] * 3 + ["سبز"] * 2,
+    "bag 1 (8 blue)":            ["blue"] * 8,
+    "bag 2 (4 blue + 4 red)":    ["blue"] * 4 + ["red"] * 4,
+    "bag 3 (3 blue + 3 red + 2 green)": ["blue"] * 3 + ["red"] * 3 + ["green"] * 2,
 }
 for name, bag in bags.items():
-    print(f"{name:35} ← غافلگیری: {surprise(bag):.2f}")
+    print(f"{name:35} -> surprise: {surprise(bag):.2f}")
 
-# جعبهٔ خالص = ۰ غافلگیری. هرچه قاطی‌تر، عدد بزرگ‌تر. همین!
+# a pure box = 0 surprise. The more mixed, the bigger the number. That's it!
 """
 
 A_CODE_2B = """\
-# A2b — جعبهٔ ۱۱ حیوان چقدر غافلگیرکننده است؟ (اول حدس بزن، بعد اجرا کن)
+# A2b — how surprising is the 11-animal box? (guess first, then run)
 """ + ANIMALS + """
-print("ترکیب جعبه:", dict(y.value_counts()))
-print(f"غافلگیریِ جعبهٔ حیوانات: {surprise(y):.2f}")
+print("box composition:", dict(y.value_counts()))
+print(f"surprise of the animal box: {surprise(y):.2f}")
 """
 
 A_MD_3 = """\
@@ -185,7 +179,7 @@ A_MD_3 = """\
 """
 
 A_CODE_3 = """\
-# A3 — جدول امتیازها: ماشین همهٔ سؤال‌ها را می‌سنجد
+# A3 — the scoreboard: the machine measures every question
 """ + ANIMALS + """
 def gain_of(feature, th):
     left  = y[animals[feature] <  th]
@@ -196,21 +190,21 @@ def gain_of(feature, th):
     return surprise(y) - after
 
 rows = []
-for feature in ("وزن", "طول_گوش"):
+for feature in ("weight", "ear_length"):
     for th in (3.25, 4.5, 8.25, 14, 30):
-        rows.append((f"{feature} ≥ {th}", gain_of(feature, th)))
-board = pd.DataFrame(rows, columns=["سؤال", "بهره"]).sort_values("بهره", ascending=False)
+        rows.append((f"{feature} >= {th}", gain_of(feature, th)))
+board = pd.DataFrame(rows, columns=["question", "gain"]).sort_values("gain", ascending=False)
 board.index = range(1, len(board) + 1)
-print(f"غافلگیریِ قبل از هر سؤال: {surprise(y):.2f}")
+print(f"surprise before each question: {surprise(y):.2f}")
 print(board.to_string())
 
-# دو قهرمان مساوی‌اند (وزن ≥ ۱۴ و گوش ≥ ۸.۲۵) — ماشین اولین‌ که دیده را نگه می‌دارد: وزن.
+# two champions are tied (weight >= 14 and ear >= 8.25) — the machine keeps the first one it saw: weight.
 """
 
 A_CODE_3B = """\
-# A3b — حالا فقط جعبهٔ سبک (۷ حیوان: ۴ گربه + ۳ سگ کوچک). قهرمان کیست؟
-light = animals[animals["وزن"] < 14]
-y_light = light["گروه"]
+# A3b — now only the light box (7 animals: 4 cats + 3 small dogs). Who is the champion?
+light = animals[animals["weight"] < 14]
+y_light = light["group"]
 def gain_light(feature, th):
     left  = y_light[light[feature] <  th]
     right = y_light[light[feature] >= th]
@@ -219,13 +213,13 @@ def gain_light(feature, th):
     after = (len(left) * surprise(left) + len(right) * surprise(right)) / len(y_light)
     return surprise(y_light) - after
 
-print("ترکیب جعبهٔ سبک:", dict(y_light.value_counts()))
-print(f"غافلگیری: {surprise(y_light):.2f}")
-for feature, th in [("طول_گوش", 8.25), ("طول_گوش", 7.0), ("وزن", 3.75)]:
-    print(f"  {feature} ≥ {th:5} ← بهره: {gain_light(feature, th):.2f}")
+print("light box composition:", dict(y_light.value_counts()))
+print(f"surprise: {surprise(y_light):.2f}")
+for feature, th in [("ear_length", 8.25), ("ear_length", 7.0), ("weight", 3.75)]:
+    print(f"  {feature} >= {th:5} -> gain: {gain_light(feature, th):.2f}")
 
-# قهرمان: گوش ≥ ۸.۲۵ — جعبه را کاملاً خالص می‌کند (بهره = ۰.۹۹ = همهٔ غافلگیری).
-# همین سؤالِ دومِ درختِ جلسهٔ ۲ است: خودتان پیدایش کردید.
+# champion: ear_length >= 8.25 — it makes the box fully pure (gain = 0.99 = all the surprise).
+# this is the tree's second question from session 2: you found it yourselves.
 """
 
 A_MD_4 = """\
@@ -236,10 +230,10 @@ A_MD_4 = """\
 """
 
 A_CODE_4 = """\
-# A4 — جعبهٔ تایتانیک
+# A4 — the Titanic box
 """ + TITANIC + """
-print(f"مسافرها: {len(y_t)} — زنده‌مانده: {y_t.sum()} ({y_t.mean():.0%})")
-print(f"غافلگیریِ جعبهٔ تایتانیک: {surprise(y_t):.2f}")
+print(f"passengers: {len(y_t)} — survived: {y_t.sum()} ({y_t.mean():.0%})")
+print(f"surprise of the Titanic box: {surprise(y_t):.2f}")
 """
 
 A_MD_5 = """\
@@ -250,7 +244,7 @@ A_MD_5 = """\
 """
 
 A_CODE_5 = """\
-# A5 — بهرهٔ هر ویژگی روی تایتانیک (بهترین سؤالِ هر ویژگی)
+# A5 — each feature's gain on Titanic (the best question of each feature)
 """ + TITANIC + """
 def gain_feature(col):
     vals = sorted(X_t[col].unique())
@@ -268,13 +262,13 @@ def gain_feature(col):
 
 board = pd.DataFrame(
     [(c, gain_feature(c)) for c in X_t.columns],
-    columns=["ویژگی", "بهره"]).sort_values("بهره", ascending=False)
+    columns=["feature", "gain"]).sort_values("gain", ascending=False)
 board.index = range(1, len(board) + 1)
-print(f"غافلگیریِ جعبه: {surprise(y_t):.2f}")
+print(f"box surprise: {surprise(y_t):.2f}")
 print(board.to_string())
 
-# قهرمان: is_female — همان که جلسهٔ ۱ رأی‌تان بود. ماشین فقط عددش را گفت.
-# (جعبهٔ مردها: ۲۱٪ زنده ماندند. جعبهٔ زن‌ها: ۷۵٪.)
+# champion: is_female — the one the class voted for in session 1. The machine just said its number.
+# (the men's box: 21% survived. the women's box: 75%.)
 """
 
 A_MD_6 = """\
@@ -284,11 +278,11 @@ A_MD_6 = """\
 """
 
 A_CODE_6 = """\
-# A6 — بازیِ ماشین، به‌صورت پایتونِ ساده (روی جعبهٔ حیوانات)
+# A6 — the machine's game, in plain Python (on the animal box)
 """ + ANIMALS + """
 def best_question(table, labels):
     best_gain, best_q = 0.0, None
-    for feature in ("وزن", "طول_گوش"):
+    for feature in ("weight", "ear_length"):
         vals = sorted(table[feature].unique())
         for i in range(len(vals) - 1):
             th = (vals[i] + vals[i + 1]) / 2
@@ -303,14 +297,14 @@ def best_question(table, labels):
     return best_q, best_gain
 
 q, g = best_question(animals, y)
-print(f"قهرمان: {q[0]} ≥ {q[1]}  با بهرهٔ {g:.2f}")
+print(f"champion: {q[0]} >= {q[1]}  with gain {g:.2f}")
 
-# و برای گرهٔ دوم، همان بازی روی جعبهٔ سبک:
-light = animals[animals["وزن"] < 14]
-q2, g2 = best_question(light, light["گروه"])
-print(f"قهرمانِ جعبهٔ سبک: {q2[0]} ≥ {q2[1]}  با بهرهٔ {g2:.2f}")
+# and for node two, the same game on the light box:
+light = animals[animals["weight"] < 14]
+q2, g2 = best_question(light, light["group"])
+print(f"light-box champion: {q2[0]} >= {q2[1]}  with gain {g2:.2f}")
 
-# این دو سؤال، دقیقاً درختِ عمق-۲ جلسهٔ ۲ هستند. خط چهارمی وجود ندارد.
+# these two questions are exactly session 2's depth-2 tree. There is no line four.
 """
 
 # ---------------------------------------------------------------- PART B (at-home)
@@ -330,16 +324,16 @@ B_MD_1 = """\
 """
 
 B_CODE_1 = """\
-# B1 — غافلگیریِ کیسه‌ها را حساب کن
-bag_a = ["قرمز"] * 10
-bag_b = ["قرمز"] * 5 + ["آبی"] * 5
-bag_c = ["قرمز"] * 1 + ["آبی"] * 9
+# B1 — compute the bags' surprise
+bag_a = ["red"] * 10
+bag_b = ["red"] * 5 + ["blue"] * 5
+bag_c = ["red"] * 1 + ["blue"] * 9
 
-# TODO: با تابع surprise (سلول تنظیمات) هر سه را حساب کن و در متغیرها بگذار
-B1_surprise_a = None   # <-- پاسخ تو
-B1_surprise_b = None   # <-- پاسخ تو
-B1_surprise_c = None   # <-- پاسخ تو
-print(f"الف: {B1_surprise_a}، ب: {B1_surprise_b}، ج: {B1_surprise_c}")
+# TODO: use the surprise function (setup cell) to compute all three and store them in the variables
+B1_surprise_a = None   # <-- your answer
+B1_surprise_b = None   # <-- your answer
+B1_surprise_c = None   # <-- your answer
+print(f"A: {B1_surprise_a}, B: {B1_surprise_b}, C: {B1_surprise_c}")
 """
 
 B_MD_2 = """\
@@ -354,9 +348,9 @@ B_MD_2 = """\
 """
 
 B_CODE_2 = """\
-# B2 — بهرهٔ هر سه سؤال را حساب کن، قهرمان را انتخاب کن
-light = animals[animals["وزن"] < 14]
-y_light = light["گروه"]
+# B2 — compute the gain of all three questions, pick the champion
+light = animals[animals["weight"] < 14]
+y_light = light["group"]
 
 def gain_light(feature, th):
     left  = y_light[light[feature] <  th]
@@ -366,12 +360,12 @@ def gain_light(feature, th):
     after = (len(left) * surprise(left) + len(right) * surprise(right)) / len(y_light)
     return surprise(y_light) - after
 
-# TODO: بهرهٔ سه سؤال را حساب کن؛ سؤالِ قهرمان را (رشتهٔ کامل، مثل "طول_گوش ≥ 8.25") در B2_champion بگذار
-B2_gain_ears_825 = None   # <-- بهرهٔ سؤال اول
-B2_gain_ears_70  = None   # <-- بهرهٔ سؤال دوم
-B2_gain_weight_375 = None # <-- بهرهٔ سؤال سوم
-B2_champion = ""          # <-- نام سؤالِ قهرمان (رشته)
-print(f"قهرمان: {B2_champion}")
+# TODO: compute the three gains; put the champion question (full string, like "ear_length >= 8.25") in B2_champion
+B2_gain_ears_825 = None   # <-- gain of question one
+B2_gain_ears_70  = None   # <-- gain of question two
+B2_gain_weight_375 = None # <-- gain of question three
+B2_champion = ""          # <-- champion question name (string)
+print(f"champion: {B2_champion}")
 """
 
 B_MD_3 = """\
@@ -383,19 +377,19 @@ B_MD_3 = """\
 """
 
 B_CODE_3 = """\
-# B3 — قهرمانِ تایتانیک + جعبه‌های قبل/بعد (تحویل امشب)
+# B3 — Titanic's champion + before/after boxes (tonight's homework)
 """ + TITANIC + """
-# TODO: مثل A5 بهرهٔ بهترین سؤالِ هر ویژگی را حساب کن
-# TODO: نام ویژگیِ قهرمان را در B3_champion_feature بگذار (یکی از: "is_female", "pclass", "fare", "age")
-# TODO: بهرهٔ قهرمان را در B3_champion_gain بگذار (عدد)
+# TODO: like A5, compute each feature's best-question gain
+# TODO: put the champion feature name in B3_champion_feature (one of: "is_female", "pclass", "fare", "age")
+# TODO: put the champion's gain in B3_champion_gain (number)
 B3_champion_feature = ""
 B3_champion_gain = 0.0
-print(f"قهرمان: {B3_champion_feature} با بهرهٔ {B3_champion_gain:.3f}")
+print(f"champion: {B3_champion_feature} with gain {B3_champion_gain:.3f}")
 
-# حالا جعبهٔ قبل/بعد را بکش (مثل نمودارهای جلسهٔ ۱ — خودت کاملش کن)
+# now draw the before/after box (like session 1's charts — complete it yourself)
 fig, axes = plt.subplots(1, 2, figsize=(11, 4))
-# TODO (بخش تصویری): در axes[0] جعبهٔ کامل: نوارِ «زنده/نزنده» با تعداد ۲۸۸ و ۴۲۴
-# TODO (بخش تصویری): در axes[1] دو جعبهٔ بعد از سؤالِ قهرمان: مردها و زن‌ها با تعداد زنده‌مانده‌ها
+# TODO (visual part): in axes[0] the full box: survived/not-survived bars with counts 288 and 424
+# TODO (visual part): in axes[1] the two boxes after the champion question: men and women with survivor counts
 plt.tight_layout(); plt.show()
 """
 
@@ -413,7 +407,7 @@ C_MD_1 = """\
 """
 
 C_CODE_1 = """\
-# C1 — نمودار بهره بر حسب آستانه
+# C1 — the gain-vs-threshold chart
 """ + ANIMALS + """
 def gain_of(feature, th):
     left  = y[animals[feature] <  th]
@@ -424,17 +418,17 @@ def gain_of(feature, th):
     return surprise(y) - after
 
 ths = np.arange(1, 46, 0.5)
-gains = [gain_of("وزن", t) for t in ths]
+gains = [gain_of("weight", t) for t in ths]
 plt.figure(figsize=(9, 4))
 plt.plot(ths, gains, lw=2.5)
 plt.axvspan(6, 22, color="#2D7FF9", alpha=0.15)
-plt.xlabel(fa("آستانهٔ وزن")); plt.ylabel(fa("بهرهٔ سؤال"))
-plt.title(fa("بهرهٔ «وزن ≥ آستانه» — پادشاهِ دشت"))
+plt.xlabel("weight threshold"); plt.ylabel("question gain")
+plt.title("gain of 'weight >= threshold' — king of the plain")
 plt.show()
 
-# بحث: چرا هر عددی بین ۶ و ۲۲ (ناحیهٔ آبی) قهرمان است؟
-# (چون همهٔ گربه‌ها و سگ‌های کوچک سبک‌تر و همهٔ سگ‌های بزرگ سنگین‌ترند —
-#  هر آستانه‌ای بین این دو دسته، یک‌جا را قفل می‌کند.)
+# discussion: why is every number between 6 and 22 (the blue zone) a champion?
+# (because all cats and small dogs are lighter and all big dogs are heavier —
+#  any threshold between the two groups locks one spot.)
 """
 
 C_MD_2 = """\
@@ -446,26 +440,26 @@ C_MD_2 = """\
 """
 
 C_CODE_2 = """\
-# C2 — جعبهٔ ۱۰+۱: سؤالِ کوچک، بهرهٔ بزرگ
+# C2 — the 10+1 box: a small question, a big gain
 box = pd.DataFrame({
-    "وزن": [3.0] + [22, 25, 28, 30, 32, 35, 38, 40, 45, 50],
-    "گروه": ["گربه"] + ["سگ بزرگ"] * 10})
-y_box = box["گروه"]
+    "weight": [3.0] + [22, 25, 28, 30, 32, 35, 38, 40, 45, 50],
+    "group": ["cat"] + ["big dog"] * 10})
+y_box = box["group"]
 def gain_box(th):
-    left  = y_box[box["وزن"] <  th]
-    right = y_box[box["وزن"] >= th]
+    left  = y_box[box["weight"] <  th]
+    right = y_box[box["weight"] >= th]
     if len(left) == 0 or len(right) == 0:
         return 0.0
     after = (len(left) * surprise(left) + len(right) * surprise(right)) / len(y_box)
     return surprise(y_box) - after
 
-print(f"غافلگیریِ جعبه: {surprise(y_box):.3f}")
+print(f"box surprise: {surprise(y_box):.3f}")
 for th in (20, 34, 44, 55):
-    print(f"  وزن ≥ {th:3} ← بهره: {gain_box(th):.3f}")
+    print(f"  weight >= {th:3} -> gain: {gain_box(th):.3f}")
 
-# بحث: «وزن ≥ 20» فقط یک حیوان جدا می‌کند ولی جعبه را کاملاً خالص می‌کند —
-# بهره‌اش از «وزن ≥ 34» (که ۵ حیوان جدا می‌کند ولی دو طرف را قاطی نگه می‌دارد) بیشتر است.
-# قهرمان یعنی بیشترین «مرتب‌شدگی»، نه بیشترین «جداکردن».
+# discussion: "weight >= 20" separates only one animal but makes the box fully pure —
+# its gain beats "weight >= 34" (which separates 5 animals but keeps both sides mixed).
+# champion means the most "sorting", not the most "separating".
 """
 
 C_MD_3 = """\
@@ -480,11 +474,11 @@ C_MD_3 = """\
 """
 
 C_CODE_3 = """\
-# C3 — راند دوم: جعبهٔ زن‌ها
+# C3 — round two: the women's box
 """ + TITANIC + """
 women = X_t[X_t["is_female"] == 1]
 y_w = y_t[X_t["is_female"] == 1]
-print(f"جعبهٔ زن‌ها: {len(y_w)} نفر، {y_w.mean():.0%} زنده، غافلگیری {surprise(y_w):.2f}")
+print(f"women's box: {len(y_w)} people, {y_w.mean():.0%} survived, surprise {surprise(y_w):.2f}")
 
 def gain_w(col):
     vals = sorted(women[col].unique())
@@ -501,9 +495,9 @@ def gain_w(col):
     return best
 
 for c in ("pclass", "age", "fare"):
-    print(f"  بهترین سؤالِ {c:10} ← بهره: {gain_w(c):.3f}")
+    print(f"  best question for {c:10} -> gain: {gain_w(c):.3f}")
 
-# بحث: راند دومِ درختِ واقعی تایتانیک، همان چیزی است که در عکسِ درختِ جلسهٔ ۱ دیدید.
+# discussion: round two of the real Titanic tree is what you saw in session 1's tree picture.
 """
 
 # ---------------------------------------------------------------- assemble
@@ -530,22 +524,22 @@ student_cells = (
 
 # ---- solution variants of the B cells (answers filled in) ----
 B_CODE_1_SOL = """\
-# B1 — غافلگیریِ کیسه‌ها (پاسخ)
-bag_a = ["قرمز"] * 10
-bag_b = ["قرمز"] * 5 + ["آبی"] * 5
-bag_c = ["قرمز"] * 1 + ["آبی"] * 9
+# B1 — the bags' surprise (solution)
+bag_a = ["red"] * 10
+bag_b = ["red"] * 5 + ["blue"] * 5
+bag_c = ["red"] * 1 + ["blue"] * 9
 
-B1_surprise_a = surprise(bag_a)   # 0.0 — جعبهٔ خالص، هیچ غافلگیری‌ای نیست
-B1_surprise_b = surprise(bag_b)   # 1.0 — قاطی‌ترین حالتِ دو رنگ
-B1_surprise_c = surprise(bag_c)   # 0.469 — تقریباً خالص، کمی غافلگیری
-print(f"الف: {B1_surprise_a}، ب: {B1_surprise_b}، ج: {B1_surprise_c}")
-# نکته: «ج» از «ب» خالص‌تر است چون یک رنگ غالب است — غافلگیری‌اش کمتر.
+B1_surprise_a = surprise(bag_a)   # 0.0 — a pure box, no surprise at all
+B1_surprise_b = surprise(bag_b)   # 1.0 — the most mixed two-color state
+B1_surprise_c = surprise(bag_c)   # 0.469 — almost pure, a little surprise
+print(f"A: {B1_surprise_a}, B: {B1_surprise_b}, C: {B1_surprise_c}")
+# note: bag C is purer than bag B because one color dominates — less surprise.
 """
 
 B_CODE_2_SOL = """\
-# B2 — قهرمانِ جعبهٔ سبک (پاسخ)
-light = animals[animals["وزن"] < 14]
-y_light = light["گروه"]
+# B2 — the light box's champion (solution)
+light = animals[animals["weight"] < 14]
+y_light = light["group"]
 
 def gain_light(feature, th):
     left  = y_light[light[feature] <  th]
@@ -555,16 +549,16 @@ def gain_light(feature, th):
     after = (len(left) * surprise(left) + len(right) * surprise(right)) / len(y_light)
     return surprise(y_light) - after
 
-B2_gain_ears_825 = gain_light("طول_گوش", 8.25)   # 0.985 — جعبه را کاملاً خالص می‌کند
-B2_gain_ears_70  = gain_light("طول_گوش", 7.0)    # 0.522
-B2_gain_weight_375 = gain_light("وزن", 3.75)     # 0.006
-B2_champion = "طول_گوش ≥ 8.25"
-print(f"قهرمان: {B2_champion}")
-# نکته: بهرهٔ قهرمان دقیقاً برابرِ غافلگیریِ کلِ جعبه است — یعنی هیچ غافلگیری‌ای باقی نمی‌ماند.
+B2_gain_ears_825 = gain_light("ear_length", 8.25)   # 0.985 — makes the box fully pure
+B2_gain_ears_70  = gain_light("ear_length", 7.0)    # 0.522
+B2_gain_weight_375 = gain_light("weight", 3.75)     # 0.006
+B2_champion = "ear_length >= 8.25"
+print(f"champion: {B2_champion}")
+# note: the champion's gain equals the whole box's surprise — no surprise is left.
 """
 
 B_CODE_3_SOL = """\
-# B3 — قهرمانِ تایتانیک + جعبه‌های قبل/بعد (پاسخ)
+# B3 — Titanic's champion + before/after boxes (solution)
 """ + TITANIC + """
 def gain_feature(col):
     vals = sorted(X_t[col].unique())
@@ -581,23 +575,23 @@ def gain_feature(col):
     return best
 
 board = pd.DataFrame([(c, gain_feature(c)) for c in X_t.columns],
-                     columns=["ویژگی", "بهره"]).sort_values("بهره", ascending=False)
+                     columns=["feature", "gain"]).sort_values("gain", ascending=False)
 print(board.to_string())
 B3_champion_feature = "is_female"
-B3_champion_gain = board.loc[board["ویژگی"] == "is_female", "بهره"].iloc[0]
-print(f"قهرمان: {B3_champion_feature} با بهرهٔ {B3_champion_gain:.3f}")
+B3_champion_gain = board.loc[board["feature"] == "is_female", "gain"].iloc[0]
+print(f"champion: {B3_champion_feature} with gain {B3_champion_gain:.3f}")
 
-# جعبهٔ قبل/بعد
+# the before/after box
 fig, axes = plt.subplots(1, 2, figsize=(11, 4))
-axes[0].bar([fa("زنده ماند"), fa("زنده نماند")], [288, 424],
+axes[0].bar(["survived", "did not survive"], [288, 424],
             color=["#4A8F6C", "#C0C8D0"])
-axes[0].set_title(fa("جعبهٔ کامل — ۷۱۲ مسافر"))
+axes[0].set_title("the full box — 712 passengers")
 for i, v in enumerate([288, 424]):
     axes[0].text(i, v + 6, str(v), ha="center")
 men = y_t[X_t["is_female"] == 0]; women = y_t[X_t["is_female"] == 1]
-axes[1].bar([fa("مردها (۴۵۳)"), fa("زن‌ها (۲۵۹)")], [men.mean()*100, women.mean()*100],
+axes[1].bar(["men (453)", "women (259)"], [men.mean()*100, women.mean()*100],
             color=["#C0C8D0", "#2D7FF9"])
-axes[1].set_title(fa("بعد از سؤالِ قهرمان — درصدِ بقا"))
+axes[1].set_title("after the champion question — survival rate (%)")
 axes[1].text(0, men.mean()*100 + 1, f"{men.mean():.0%}", ha="center")
 axes[1].text(1, women.mean()*100 + 1, f"{women.mean():.0%}", ha="center")
 plt.tight_layout(); plt.show()
@@ -615,6 +609,21 @@ solution_cells = (
     + partB_sol
     + partC
 )
+
+# `--strip-demo-output` is a POST-EXECUTION step: strip the PART 0 hook outputs
+# from the already-executed student notebook WITHOUT regenerating (regenerating
+# would wipe every saved output). Run it only after nbconvert.
+if "--strip-demo-output" in sys.argv:
+    p = os.path.join(HERE, "s03_notebook.ipynb")
+    d = json.load(open(p))
+    for cell in d["cells"]:
+        if cell["cell_type"] == "code" and "".join(cell["source"]).startswith("# DEMO"):
+            cell["outputs"] = []
+            cell["execution_count"] = None
+            break
+    json.dump(d, open(p, "w"), indent=1, ensure_ascii=False)
+    print("stripped PART 0 outputs from", os.path.basename(p))
+    sys.exit(0)
 
 write(os.path.join(HERE, "s03_notebook.ipynb"), student_cells)
 write(os.path.join(HERE, "s03_notebook_solution.ipynb"), solution_cells)

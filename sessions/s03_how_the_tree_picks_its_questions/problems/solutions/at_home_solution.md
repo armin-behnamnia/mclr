@@ -6,9 +6,9 @@
 
 **Answer:**
 ```python
-B1_surprise_a = surprise(["قرمز"] * 10)                      # 0.0
-B1_surprise_b = surprise(["قرمز"] * 5 + ["آبی"] * 5)         # 1.0
-B1_surprise_c = surprise(["قرمز"] * 1 + ["آبی"] * 9)         # 0.469
+B1_surprise_a = surprise(["red"] * 10)                      # 0.0
+B1_surprise_b = surprise(["red"] * 5 + ["blue"] * 5)         # 1.0
+B1_surprise_c = surprise(["red"] * 1 + ["blue"] * 9)         # 0.469
 ```
 
 **Common wrong approach:** expecting bag C to score higher than bag B "because it has more balls of one color" — more of ONE color is exactly what makes it MORE predictable (LESS surprise). The even split is always the most surprising box for its number of colors.
@@ -16,19 +16,19 @@ B1_surprise_c = surprise(["قرمز"] * 1 + ["آبی"] * 9)         # 0.469
 ## B2 — The Champion of the Light Box (1 pt)
 
 **Reasoning:** the light box holds 4 cats + 3 small dogs (surprise 0.985). Compute each candidate's gain:
-- `طول_گوش ≥ 8.25`: left = 4 cats, right = 3 small dogs — BOTH sides pure. Gain = 0.985 — the entire surprise of the box, removed.
-- `طول_گوش ≥ 7.0`: left = 3 cats, right = 1 cat + 3 small dogs — still mixed on the right. Gain ≈ 0.522.
-- `وزن ≥ 3.75`: left = 1 cat + 1 small dog, right = 3 cats + 2 small dogs — both sides as mixed as before. Gain ≈ 0.006 — a door that moves animals but sorts nothing.
+- `ear_length >= 8.25`: left = 4 cats, right = 3 small dogs — BOTH sides pure. Gain = 0.985 — the entire surprise of the box, removed.
+- `ear_length >= 7.0`: left = 3 cats, right = 1 cat + 3 small dogs — still mixed on the right. Gain ≈ 0.522.
+- `weight >= 3.75`: left = 1 cat + 1 small dog, right = 3 cats + 2 small dogs — both sides as mixed as before. Gain ≈ 0.006 — a door that moves animals but sorts nothing.
 
 **Answer:**
 ```python
-B2_gain_ears_825 = 0.985   # (gain_light("طول_گوش", 8.25))
+B2_gain_ears_825 = 0.985   # (gain_light("ear_length", 8.25))
 B2_gain_ears_70  = 0.522
 B2_gain_weight_375 = 0.006
-B2_champion = "طول_گوش ≥ 8.25"
+B2_champion = "ear_length >= 8.25"
 ```
 
-**Common wrong approach:** picking `وزن ≥ 3.75` because it "splits the box more evenly" — evenness is not the goal, sorted-ness is. Have the student print the two sides of each split; the champion is the one where both printouts show a single group.
+**Common wrong approach:** picking `weight >= 3.75` because it "splits the box more evenly" — evenness is not the goal, sorted-ness is. Have the student print the two sides of each split; the champion is the one where both printouts show a single group.
 
 ## B3 — The Titanic Champion + the Split Plot (1 pt)
 

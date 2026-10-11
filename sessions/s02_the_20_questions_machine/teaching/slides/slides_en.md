@@ -298,7 +298,7 @@ Three small notebook problems: count, predict, find the right depth
 
 <!--
 [55:00] SHIP + loop OUT LOUD: photo committed tonight; 3 problems (20-30 min); next session opens by solving them TOGETHER from their attempts.
-Show the judge command: python judge/run.py s02_notebook.ipynb
+Show how at-home notebooks get judged (instructor-only run): python judge/run.py s02_notebook.ipynb
 -->
 
 ---
@@ -309,8 +309,6 @@ Show the judge command: python judge/run.py s02_notebook.ipynb
 1. **B1** The question and leaf counter
 2. **B2** Which room does the elephant reach?
 3. **B3** The smallest perfect depth
-
-`python judge/run.py s02_notebook.ipynb` ← instant score, anytime
 
 <!--
 One sentence of story per problem:

@@ -50,7 +50,7 @@ Each animal = two numbers (weight, ear length) + one answer
 *No rules were given to it. None.*
 
 <!--
-[RUN: PART 0 demo cell — مرحلهٔ ۱, the «جدول» marker] The 8-row table is ALL the machine sees.
+[RUN: PART 0 demo cell — prints "stage 1 - the table"] The 8-row table is ALL the machine sees.
 SAY: "8 animals. Two numbers each, plus the answer. Nobody wrote a single rule."
 EXPECT: "so what? it's just a table" — perfect, let them underestimate it.
 -->
@@ -69,8 +69,8 @@ Behind the line: cats. In front: dogs.
 ![art](../../assets/animal_game.png)
 
 <!--
-[RUN: PART 0 demo cell — مرحلهٔ ۳, the «خطِ ماشین» marker] The scatter: the machine's own red dashed line.
-(مرحلهٔ ۲ was the silent .fit() — one invisible line of code.)
+[RUN: PART 0 demo cell — prints "stage 3 - the machine's line"] The scatter: the machine's own red dashed line.
+(stage 2 was the silent .fit() — one invisible line of code.)
 SAY: "No human drew this line. The machine found it hiding in those 8 rows."
 EXPECT: "where did the line come from?!" — do NOT explain yet.
 -->
@@ -89,7 +89,7 @@ Puppy ← cat?! Elephant ← dog?!
 **Its whole secret: one question — "weight ≤ 14 kg?"**
 
 <!--
-[RUN: PART 0 demo cell — مرحلهٔ ۴, the «امتحان» marker] Verdicts on unseen animals.
+[RUN: PART 0 demo cell — prints "stage 4 - exam with unseen animals"] Verdicts on unseen animals.
 Let the puppy/elephant errors land as LAUGHS, then the cell prints the reveal: one question, weight ≤ 14 kg.
 SAY: "It learned ONE question from 8 rows — and it still gets the puppy wrong. Learning is a guess."
 SEED: "How does the machine pick that ONE question? Session 3 answers it — but first, Session 2."
@@ -448,8 +448,6 @@ Judge: python judge/run.py s01_notebook.ipynb
 2. **B2** Build Your Own Dataset
 3. **B3** The 3 Magic Lines on YOUR animals
 4. **B4** The Survival Predictor
-
-`python judge/run.py s01_notebook.ipynb` ← instant score, anytime
 
 <!--
 One sentence of story per problem:

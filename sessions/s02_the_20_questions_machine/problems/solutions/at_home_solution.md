@@ -24,11 +24,11 @@ B1_num_leaves = 3
 **Answer:**
 ```python
 model = DecisionTreeClassifier(max_depth=2, random_state=42).fit(X, y)
-elephant = pd.DataFrame({"وزن": [3000], "طول_گوش": [20]})
-B2_elephant_room = model.predict(elephant[X.columns])[0]   # "سگ بزرگ"
+elephant = pd.DataFrame({"weight": [3000], "ear_length": [20]})
+B2_elephant_room = model.predict(elephant[X.columns])[0]   # "big dog"
 ```
 
-**Common wrong approach:** typing `"فیل"` or `"سگ"` by hand — the verdict must be the exact string the tree can say, copied from the prediction. The tree's vocabulary is only its three room names.
+**Common wrong approach:** typing `"elephant"` or `"dog"` by hand — the verdict must be the exact string the tree can say, copied from the prediction. The tree's vocabulary is only its three room names (`"cat"`, `"big dog"`, `"small dog"`).
 
 ## B3 — The Smallest Perfect Depth (1 pt)
 

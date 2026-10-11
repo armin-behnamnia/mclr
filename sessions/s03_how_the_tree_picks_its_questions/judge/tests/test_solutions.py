@@ -40,7 +40,7 @@ def grade(ns):
         gains_ok = all(_close(ns.get(v, -1), EXPECTED[v], tol=1e-4) for v in
                        ("B2_gain_ears_825", "B2_gain_ears_70", "B2_gain_weight_375"))
         if champ == EXPECTED["B2_champion"] and gains_ok:
-            results.append((True, 1, " PASS: Problem B2 (1/1) — طول_گوش ≥ 8.25 sorts the light box completely. You derived the machine's second question."))
+            results.append((True, 1, " PASS: Problem B2 (1/1) — ear_length >= 8.25 sorts the light box completely. You derived the machine's second question."))
         elif champ == EXPECTED["B2_champion"] and not gains_ok:
             results.append((False, 0, " FAIL: Problem B2: champion is right, but the three gain numbers do not match — recompute each with gain_light() and keep the printed value."))
         else:

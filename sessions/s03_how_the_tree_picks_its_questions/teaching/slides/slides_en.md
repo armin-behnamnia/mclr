@@ -339,9 +339,7 @@ If anyone stumbles on Q1-3, re-explain NOW.
 
 # Tonight's Delivery + At-Home (3)
 
-1. **B1** The surprise of three bags  2. **B2** The light box champion  3. **B3** Titanic's champion + the split plot ⛴️
-
-`python judge/run.py s03_notebook.ipynb` ← instant score, anytime
+1. **B1** The surprise of three bags  2. **B2** The light box champion  3. **B3** Titanic's champion + the split plot
 
 "My Session 1 vote got its number today." — **your third Ship**
 
@@ -352,7 +350,7 @@ If anyone stumbles on Q1-3, re-explain NOW.
 One sentence of story per problem:
 B1 compute the bags' surprise numbers; B2 derive the light box champion; B3 the Titanic leaderboard + the annotated plot.
 ~20-30 min; deadline before the problem-solving session; next session solves them TOGETHER from their attempts.
-First judge run is all-red — that's normal.
+Judge is instructor-only: python judge/run.py s03_notebook.ipynb
 -->
 
 ---

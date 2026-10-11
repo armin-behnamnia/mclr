@@ -289,9 +289,9 @@ CALLBACK: "Session 1, you voted gender matters most. You beat the machine to it 
 # کلِ راز
 
 ```python
-for هر_سؤالِ ممکن:
-    نمره = غافلگیری_قبل − غافلگیری_بعد
-قهرمان = بیشترینِ نمره‌ها
+for every possible question:
+    score = surprise_before - surprise_after
+champion = the biggest score
 ```
 
 *خطِ چهارمی وجود ندارد.*
@@ -341,9 +341,7 @@ If anyone stumbles on Q1-3, re-explain NOW.
 
 # تحویل امشب + تمرین‌های خانه (۳ تا)
 
-1. **B1** غافلگیریِ سه کیسه  2. **B2** قهرمانِ جعبهٔ سبک  3. **B3** قهرمانِ تایتانیک + نقشهٔ کشتی ⛴️
-
-`python judge/run.py s03_notebook.ipynb` ← نمرهٔ فوری، هر وقت خواستی
+1. **B1** غافلگیریِ سه کیسه  2. **B2** قهرمانِ جعبهٔ سبک  3. **B3** قهرمانِ تایتانیک + نقشهٔ کشتی
 
 «رأیِ جلسهٔ ۱‌ام، امروز عدد شد.» — **سیُمین Ship ات**
 
@@ -354,7 +352,7 @@ If anyone stumbles on Q1-3, re-explain NOW.
 One sentence of story per problem:
 B1 compute the bags' surprise numbers; B2 derive the light box champion; B3 the Titanic leaderboard + the annotated plot.
 ~20-30 min; deadline before the problem-solving session; next session solves them TOGETHER from their attempts.
-First judge run is all-red — that's normal.
+Judge is instructor-only: python judge/run.py s03_notebook.ipynb
 -->
 
 ---

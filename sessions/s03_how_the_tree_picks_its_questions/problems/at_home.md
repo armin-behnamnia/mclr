@@ -24,7 +24,7 @@
 **Story:** the machine already picked the root question (`weight ≥ 14`). Now the light box (7 animals: 4 cats + 3 small dogs) needs its question. Three candidates are on the table.
 **Task:** in cell `B2`, compute the gain of each candidate question on the light box, then store:
 - `B2_gain_ears_825`, `B2_gain_ears_70`, `B2_gain_weight_375` — the three gains (numbers)
-- `B2_champion` — the winning question, as the exact string `"طول_گوش ≥ 8.25"` / `"طول_گوش ≥ 7.0"` / `"وزن ≥ 3.75"`
+- `B2_champion` — the winning question, as the exact string `"ear_length >= 8.25"` / `"ear_length >= 7.0"` / `"weight >= 3.75"`
 
 **Expected:** the champion is the question whose gain equals the ENTIRE surprise of the box — it sorts it completely.
 **What you should learn:** the champion is the biggest surprise-drop, not the biggest group moved. You just derived the machine's second question yourself.
@@ -46,6 +46,6 @@ Then complete the TODO plot lines: the full box (survived 288 / did not 424) nex
 
 ## Hint appendix (try without it first)
 
-- B1: `surprise(["قرمز"] * 10)` — the function is already in your setup cell.
+- B1: `surprise(["red"] * 10)` — the function is already in your setup cell.
 - B2: the `gain_light` helper from cell A3b is written in the starter cell — call it with the three candidate questions.
-- B3: copy the `gain_feature` loop from A5; the champion is the top row of your leaderboard. For the plot, two `bar` calls with Persian labels via `fa(...)`.
+- B3: copy the `gain_feature` loop from A5; the champion is the top row of your leaderboard. For the plot, two `bar` calls with English labels and a title.

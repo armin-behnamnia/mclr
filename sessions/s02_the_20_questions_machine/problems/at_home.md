@@ -22,7 +22,7 @@
 
 **Story:** the elephant (3000 kg, ears 20 cm) walks the tree's corridors like everyone else. Which room does it end in?
 **Task:** in cell `B2`, build the depth-2 tree again and predict for the elephant. Store the verdict string in:
-- `B2_elephant_room` — one of `"گربه"`, `"سگ بزرگ"`, `"سگ کوچک"`
+- `B2_elephant_room` — one of `"cat"`, `"big dog"`, `"small dog"`
 
 **Expected:** the exact verdict string (copy it from the prediction, don't type from memory).
 **What you should learn:** a leaf says ONE word for everything that reaches it — even an elephant.
@@ -43,5 +43,5 @@
 ## Hint appendix (try without it first)
 
 - B1: `plot_tree` draws question-circles and room-boxes; `get_depth()` counts the longest question-path.
-- B2: `pd.DataFrame({"وزن": [3000], "طول_گوش": [20]})` — and the prediction comes back as a string.
+- B2: `pd.DataFrame({"weight": [3000], "ear_length": [20]})` — and the prediction comes back as a string.
 - B3: the loop breaks at the first depth where `(m.predict(X) == y).all()` is true.

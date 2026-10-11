@@ -50,7 +50,7 @@ FALLBACK: narrate from notes, never skip the hook.
 *هیچ قانونی به آن داده نشده. هیچ.*
 
 <!--
-[RUN: PART 0 demo cell — مرحلهٔ ۱, the «جدول» marker] The 8-row table is ALL the machine sees.
+[RUN: PART 0 demo cell — prints "stage 1 - the table"] The 8-row table is ALL the machine sees.
 SAY: "8 animals. Two numbers each, plus the answer. Nobody wrote a single rule."
 EXPECT: "so what? it's just a table" — perfect, let them underestimate it.
 -->
@@ -69,8 +69,8 @@ EXPECT: "so what? it's just a table" — perfect, let them underestimate it.
 ![art](../../assets/animal_game.png)
 
 <!--
-[RUN: PART 0 demo cell — مرحلهٔ ۳, the «خطِ ماشین» marker] The scatter: the machine's own red dashed line.
-(مرحلهٔ ۲ was the silent .fit() — one invisible line of code.)
+[RUN: PART 0 demo cell — prints "stage 3 - the machine's line"] The scatter: the machine's own red dashed line.
+(stage 2 was the silent .fit() — one invisible line of code.)
 SAY: "No human drew this line. The machine found it hiding in those 8 rows."
 EXPECT: "where did the line come from?!" — do NOT explain yet.
 -->
@@ -89,7 +89,7 @@ EXPECT: "where did the line come from?!" — do NOT explain yet.
 **کل رازش فقط یک سؤال بود: «وزن ⁦≤ ۱۴⁩ کیلوگرم؟»**
 
 <!--
-[RUN: PART 0 demo cell — مرحلهٔ ۴, the «امتحان با حیوانات ندیده» marker] Verdicts on unseen animals.
+[RUN: PART 0 demo cell — prints "stage 4 - exam with unseen animals"] Verdicts on unseen animals.
 Let the puppy/elephant errors land as LAUGHS, then the cell prints the reveal: one question, weight ≤ 14 kg.
 SAY: "It learned ONE question from 8 rows — and it still gets the puppy wrong. Learning is a guess."
 SEED: "How does the machine pick that ONE question? Session 3 answers it — but first, Session 2."
@@ -360,9 +360,9 @@ CEREMONY before fit(): "On three, everyone say LEARN."
 # سه خط جادویی 
 
 ```python
-model = DecisionTreeClassifier(max_depth=3) # ۱. انتخاب دانش‌آموز ← این «مدل» (Model) است
-model.fit(X, y) # ۲. درس خواندن
-model.predict(new_passengers) # ۳. سؤال پرسیدن
+model = DecisionTreeClassifier(max_depth=3) # 1. pick a student ← this IS the model
+model.fit(X, y) # 2. let it study
+model.predict(new_passengers) # 3. ask it questions
 ```
 
 **بساز ← یاد بده ← پیش‌بینی کن**
@@ -447,8 +447,6 @@ Judge: python judge/run.py s01_notebook.ipynb
 2. **B2** دیتاست خودت را بساز
 3. **B3** سه خط جادویی روی حیوانات خودت
 4. **B4** پیش‌بینی‌گر بقا
-
-`python judge/run.py s01_notebook.ipynb` ← نمرهٔ فوری، هر وقت خواستی
 
 <!--
 One sentence of story per problem:
