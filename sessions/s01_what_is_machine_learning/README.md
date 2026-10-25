@@ -29,6 +29,16 @@
 | 30–55 | In-class: the Imagination Engine (invent passengers) + beat-the-human | C1–C3 |
 | 55–60 | Ship: push to GitHub, wrap-up | — |
 
+### Teacher-led deep dive (enrichment, `notebook/s01_deep_dive.ipynb`)
+
+A separate, **teacher-run** notebook for when the at-home problems are already solved or for a
+spark-hungry group. The teacher executes each cell live and the student **predicts before every
+reveal** — ten stops, under half an hour, no student editing. It goes deep on what Session 1's
+three lines actually learned (opens the animal machine and the Titanic tree, shows the confident
+guesses, the mirror-of-data effect) and then reels forward: the same three lines on study habits,
+on seeing digits, on reading spam — plus the entropy/gain bridge that Session 3 will formalize and
+a roadmap figure to the whole course. Generator: `notebook/build_deep_dive.py` (source of truth).
+
 ## Prerequisites recap
 - Python: variables, lists, dictionaries, functions (`pandas` basics: reading a CSV, `head()`)
 
